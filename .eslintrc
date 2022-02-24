@@ -1,0 +1,12 @@
+
+{
+    "plugins": [
+        "@typescript-eslint"
+  ],
+	"globals": {
+		"cy": false,
+		"Cypress": false,
+		"assert": false
+	},
+    "extends": "./tsconfig.json"
+}
