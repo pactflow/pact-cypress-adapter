@@ -2,6 +2,7 @@ import '../../../../dist/index'
 
 describe('example to-do app', () => {
   before(() => {
+    cy.setupPact('ui-consumer', 'todo-api')
     cy.usePactRequest(
       {
         method: 'GET',
@@ -13,11 +14,10 @@ describe('example to-do app', () => {
   })
 
   it('shows todo', () => {
-      //expect(true).toBe(true)
   })
 
   after(() => {
-    cy.usePactGet('getTodosGet', { consumerName: 'consumer', providerName: 'provider' })
+    cy.usePactGet('getTodosGet')
       .its('response.statusCode')
       .should('eq', 200)
   })

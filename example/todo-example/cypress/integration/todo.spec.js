@@ -2,6 +2,7 @@ import '../../../../dist/index'
 import todosResponse from '../fixtures/todo.json'
 describe('example to-do app', () => {
   before(() => {
+    cy.setupPact('ui-consumer', 'todo-api')
     cy.intercept(
       {
         method: 'GET',
@@ -19,8 +20,6 @@ describe('example to-do app', () => {
   it('shows todo', () => {})
 
   after(() => {
-    cy.usePactWait('getTodos', { consumerName: 'consumer', providerName: 'provider' })
-      .its('response.statusCode')
-      .should('eq', 200)
+    cy.usePactWait('getTodos').its('response.statusCode').should('eq', 200)
   })
 })
