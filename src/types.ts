@@ -25,3 +25,17 @@ export type Interaction = {
     status: string | number | undefined
   } & BaseXHR
 }
+
+export type XHRRequestAndResponse = {
+  request:
+    | {
+        method: string
+        url: string
+      }
+    | BaseXHR
+  response: {
+    status: string | number | undefined
+
+    statusText: string | undefined
+  } & BaseXHR
+}

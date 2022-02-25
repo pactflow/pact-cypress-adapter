@@ -1,6 +1,6 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { uniqBy, reverse } from 'lodash'
-import { aliasType, Interaction, pactflowConfig } from 'types'
+import { aliasType, AnyObject, Interaction, pactflowConfig, XHRRequestAndResponse } from 'types'
 
 export const formatAlias = (alias: aliasType) => {
   if (Array.isArray(alias)) {
@@ -11,7 +11,7 @@ export const formatAlias = (alias: aliasType) => {
 
 export const writePact = (
   filePath: string,
-  intercept: Interception,
+  intercept: Interception | XHRRequestAndResponse,
   testCaseTitle: string,
   pactflowConfig: pactflowConfig
 ) => {
@@ -32,7 +32,7 @@ export const writePact = (
     })
 }
 
-const constructInteraction = (intercept: Interception, testTitle: string) : Interaction => {
+const constructInteraction = (intercept: Interception | AnyObject, testTitle: string) : Interaction => {
   const path = new URL(intercept.request.url).pathname
   const search = new URL(intercept.request.url).search
   const query = new URLSearchParams(search).toString()
@@ -54,7 +54,7 @@ const constructInteraction = (intercept: Interception, testTitle: string) : Inte
   }
 }
 export const constructPactFile = (
-  intercept: Interception,
+  intercept: Interception | XHRRequestAndResponse,
   testTitle: string,
   pactflowConfig: pactflowConfig,
   content?: any
