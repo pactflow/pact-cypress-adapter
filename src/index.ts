@@ -5,22 +5,28 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
-      usePactWait: (alias: aliasType, pactConfig: pactConfig) => Chainable
+      usePactWait: (alias: aliasType) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
       usePactGet: (alias: string, pactConfig: pactConfig) => Chainable
+      setupPact:(consumerName: string, providerName: string) => Chainable<null>
     }
   }
 }
 
-export const setupPactflow = ({ consumerName, providerName }: pactConfig) => ({
-  consumerName,
-  providerName
-})
+const pactConfig: pactConfig = {
+  consumerName: 'customer',
+  providerName: 'provider'
+}
+
+const setupPact = (consumerName: string, providerName: string) => {
+  pactConfig['consumerName'] =  consumerName
+  pactConfig['providerName'] =  providerName
+}
 
 const constructFilePath = ({ consumerName, providerName }: pactConfig) =>
   `cypress/pacts/${providerName}-${consumerName}.json`
 
-const usePactWait = (alias: aliasType, pactConfig: pactConfig) => {
+const usePactWait = (alias: aliasType) => {
   const formattedAlias = formatAlias(alias)
   const testCaseTitle = Cypress.currentTest.title
   const filePath = constructFilePath(pactConfig)
@@ -40,7 +46,7 @@ const usePactWait = (alias: aliasType, pactConfig: pactConfig) => {
 
 const requestDataMap: AnyObject = {}
 
-const usePactGet = (alias: string, pactConfig: pactConfig) => {
+const usePactGet = (alias: string) => {
   const formattedAlias = formatAlias(alias)
   const testCaseTitle = Cypress.currentTest.title
   const filePath = constructFilePath(pactConfig)
@@ -72,3 +78,4 @@ const usePactRequest = (option: AnyObject, alias: string) => {
 Cypress.Commands.add('usePactWait', usePactWait)
 Cypress.Commands.add('usePactRequest', usePactRequest)
 Cypress.Commands.add('usePactGet', usePactGet)
+Cypress.Commands.add('setupPact', setupPact)
