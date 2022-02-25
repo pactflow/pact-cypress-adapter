@@ -34,7 +34,7 @@ export type XHRRequestAndResponse = {
       }
     | BaseXHR
   response: {
-    status: string | number | undefined
+    statusCode: string | number | undefined
 
     statusText: string | undefined
   } & BaseXHR
