@@ -1,6 +1,6 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { uniqBy, reverse } from 'lodash'
-import { aliasType, AnyObject, Interaction, pactflowConfig, XHRRequestAndResponse } from 'types'
+import { aliasType, AnyObject, Interaction, pactConfig, XHRRequestAndResponse } from 'types'
 
 export const formatAlias = (alias: aliasType) => {
   if (Array.isArray(alias)) {
@@ -13,15 +13,15 @@ export const writePact = (
   filePath: string,
   intercept: Interception | XHRRequestAndResponse,
   testCaseTitle: string,
-  pactflowConfig: pactflowConfig
+  pactConfig: pactConfig
 ) => {
   cy.task('readFile', filePath)
     .then((content) => {
       if (content) {
         const contentString = content as string
-        return constructPactFile(intercept, testCaseTitle, pactflowConfig, JSON.parse(contentString))
+        return constructPactFile(intercept, testCaseTitle, pactConfig, JSON.parse(contentString))
       } else {
-        return constructPactFile(intercept, testCaseTitle, pactflowConfig)
+        return constructPactFile(intercept, testCaseTitle, pactConfig)
       }
     })
     .then((data) => {
@@ -56,12 +56,12 @@ const constructInteraction = (intercept: Interception | AnyObject, testTitle: st
 export const constructPactFile = (
   intercept: Interception | XHRRequestAndResponse,
   testTitle: string,
-  pactflowConfig: pactflowConfig,
+  pactConfig: pactConfig,
   content?: any
 ) => {
   const pactSkeletonObject = {
-    consumer: { name: pactflowConfig.consumerName },
-    provider: { name: pactflowConfig.providerName },
+    consumer: { name: pactConfig.consumerName },
+    provider: { name: pactConfig.providerName },
     interactions: [],
     metadata: {
       pactSpecification: {

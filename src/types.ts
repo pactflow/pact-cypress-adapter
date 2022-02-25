@@ -4,7 +4,7 @@ export type AnyObject = {
   [K in string | number]: any
 }
 
-export type pactflowConfig = {
+export type pactConfig = {
   consumerName: string
   providerName: string
 }

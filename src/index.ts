@@ -1,49 +1,49 @@
-import { aliasType, AnyObject, pactflowConfig, XHRRequestAndResponse } from 'types'
+import { aliasType, AnyObject, pactConfig, XHRRequestAndResponse } from 'types'
 import { formatAlias, writePact } from './utils'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
-      usePactWait: (alias: aliasType, pactflowConfig: pactflowConfig) => Chainable
+      usePactWait: (alias: aliasType, pactConfig: pactConfig) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
-      usePactGet: (alias: string, pactflowConfig: pactflowConfig) => Chainable
+      usePactGet: (alias: string, pactConfig: pactConfig) => Chainable
     }
   }
 }
 
-export const setupPactflow = ({ consumerName, providerName }: pactflowConfig) => ({
+export const setupPactflow = ({ consumerName, providerName }: pactConfig) => ({
   consumerName,
   providerName
 })
 
-const constructFilePath = ({ consumerName, providerName }: pactflowConfig) =>
+const constructFilePath = ({ consumerName, providerName }: pactConfig) =>
   `cypress/pacts/${providerName}-${consumerName}.json`
 
-const usePactWait = (alias: aliasType, pactflowConfig: pactflowConfig) => {
+const usePactWait = (alias: aliasType, pactConfig: pactConfig) => {
   const formattedAlias = formatAlias(alias)
   const testCaseTitle = Cypress.currentTest.title
-  const filePath = constructFilePath(pactflowConfig)
+  const filePath = constructFilePath(pactConfig)
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
       intercepts.forEach((intercept, index) => {
-        writePact(filePath, intercept, `${testCaseTitle}-${formattedAlias[index]}`, pactflowConfig)
+        writePact(filePath, intercept, `${testCaseTitle}-${formattedAlias[index]}`, pactConfig)
       })
     })
   } else {
     cy.wait(formattedAlias).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
-      writePact(filePath, flattenIntercept, `${testCaseTitle}`, pactflowConfig)
+      writePact(filePath, flattenIntercept, `${testCaseTitle}`, pactConfig)
     })
   }
 }
 
 const requestDataMap: AnyObject = {}
 
-const usePactGet = (alias: string, pactflowConfig: pactflowConfig) => {
+const usePactGet = (alias: string, pactConfig: pactConfig) => {
   const formattedAlias = formatAlias(alias)
   const testCaseTitle = Cypress.currentTest.title
-  const filePath = constructFilePath(pactflowConfig)
+  const filePath = constructFilePath(pactConfig)
   formattedAlias.forEach((alias) => {
     cy.get(alias).then((response: any) => {
       const fullRequestAndResponse = {
@@ -59,7 +59,7 @@ const usePactGet = (alias: string, pactflowConfig: pactflowConfig) => {
           statusText: response.statusText
         }
       } as XHRRequestAndResponse
-      writePact(filePath, fullRequestAndResponse, `${testCaseTitle}-${alias}`, pactflowConfig)
+      writePact(filePath, fullRequestAndResponse, `${testCaseTitle}-${alias}`, pactConfig)
     })
   })
 }
