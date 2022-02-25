@@ -12,9 +12,9 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const plugin = require('../../../../dist/plugin')
+const pactCypressPlugin = require('../../../../dist/plugin')
 const fs = require('fs')
 
 module.exports = (on, config) => {
-  plugin(on, config, fs)
+  pactCypressPlugin(on, config, fs)
 }
