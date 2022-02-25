@@ -54,7 +54,7 @@ const usePactGet = (alias: string, pactConfig: pactConfig) => {
         },
         response: {
           body: response.body,
-          status: response.status,
+          statusCode: response.status,
           headers: response.headers,
           statusText: response.statusText
         }
