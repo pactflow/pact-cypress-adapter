@@ -1,0 +1,8 @@
+# folders
+pacts/
+test/
+examples/
+.workflow
+# files
+.babelrc
+.editorconfig
