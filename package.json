@@ -6,7 +6,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest --testPathPattern=test",
-    "build": "tsc"
+    "build": "tsc",
+    "test:example": "cd example/todo-example && npm i && npm run cypress:run"
   },
   "author": "",
   "license": "MIT",

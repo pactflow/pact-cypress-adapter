@@ -17,7 +17,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run --headless --browser chrome"
   },
   "eslintConfig": {
     "extends": [
