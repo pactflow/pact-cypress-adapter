@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A cypress plugin for pact",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest --testPathPattern=test",
     "build": "tsc"
