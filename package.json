@@ -4,7 +4,7 @@
   "description": "A cypress plugin for pact",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --testPathPattern=test",
     "build": "tsc"
   },
   "author": "",
