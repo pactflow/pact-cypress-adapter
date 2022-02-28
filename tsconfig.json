@@ -1,24 +1,25 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-      "outDir": "./dist",
-      "baseUrl": "src",
-      "sourceMap": true,
-      "noLib": false,
-      "noImplicitReturns": true,
-      "noImplicitAny": true,
-      "noImplicitThis": true,
-      "resolveJsonModule": true,
-      "strictNullChecks": true,
-      "moduleResolution": "node",
-      "noEmitOnError": true,
-      "emitDecoratorMetadata": true,
-      "declaration": true,
-      "experimentalDecorators": true,
-      "target": "es5",
-      "lib": ["es5", "dom"],
-      "types": ["node","cypress"]
-    },
-    "include": ["src"],
-    "exclude": ["./node_modules/**", "dist", "examples"]
-  }
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "noLib": false,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["node", "cypress", "jest"],
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["./node_modules/**", "dist", "examples"]
+}
