@@ -89,3 +89,12 @@ export const constructPactFile = (
     interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testTitle)]
   }
 }
+
+const isFileExisted = async (fs: any, filename: string) => !!(await fs.stat(filename).catch((e: any) => false))
+export const readFileAsync = async (fs: any, filename: string) => {
+  if (await isFileExisted(fs, filename)) {
+    const data = await fs.readFile(filename, 'utf8')
+    return data
+  }
+  return null
+}

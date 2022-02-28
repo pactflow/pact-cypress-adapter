@@ -1,6 +1,8 @@
-import { formatAlias, constructPactFile } from '../src/utils'
+import { formatAlias, constructPactFile, readFileAsync } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
+
+import { promises, Stats } from 'fs'
 
 describe('formatAlias', () => {
   it('should format array of string in alias format', () => {
@@ -99,5 +101,36 @@ describe('constructPactFile', () => {
     expect(result.consumer.name).toBe('ui-consumer')
     expect(result.provider.name).toBe('todo-api')
     expect(result.interactions.length).toBe(1)
+  })
+})
+
+describe('readFile',  () => {
+  it('should return null when no file is found', async () => {
+    const mock = jest.spyOn(promises, 'stat')
+    mock.mockReturnValue(
+      new Promise((resolve, reject) => {
+        reject()
+      })
+    )
+    const fileContent = await readFileAsync(promises, 'hello')
+    expect(fileContent).toBeNull()
+  })
+
+  it('should return file content', async () => {
+    const statMock = jest.spyOn(promises, 'stat')
+    statMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolve({} as Stats)
+      })
+    )
+
+    const readFileMock = jest.spyOn(promises, 'readFile')
+    readFileMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolve('hello')
+      })
+    )
+    const fileContent = await readFileAsync(promises, 'hello')
+    expect(fileContent).toBe('hello')
   })
 })
