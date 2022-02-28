@@ -1,10 +1,10 @@
-export type aliasType = string | string[]
+export type AliasType = string | string[]
 
 export type AnyObject = {
   [K in string | number]: any
 }
 
-export type pactConfig = {
+export type PactConfigType = {
   consumerName: string
   providerName: string
 }
@@ -32,7 +32,7 @@ export type XHRRequestAndResponse = {
         method: string
         url: string
       }
-    | BaseXHR
+    & BaseXHR
   response: {
     statusCode: string | number | undefined
 
