@@ -31,11 +31,24 @@ export type XHRRequestAndResponse = {
     | {
         method: string
         url: string
-      }
-    & BaseXHR
+      } & BaseXHR
   response: {
     statusCode: string | number | undefined
-
     statusText: string | undefined
   } & BaseXHR
+}
+
+type Encodings = 'ascii' | 'base64' | 'binary' | 'hex' | 'latin1' | 'utf8' | 'utf-8' | 'ucs2' | 'ucs-2' | 'utf16le' | 'utf-16le' | null
+
+export type RequestOptionType = {
+  auth: object
+  body: AnyObject
+  encoding: Encodings
+  followRedirect: boolean
+  form: boolean
+  gzip: boolean
+  headers: object
+  method: string
+  qs: object
+  url: string
 }

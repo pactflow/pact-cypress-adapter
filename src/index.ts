@@ -1,4 +1,4 @@
-import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse } from 'types'
+import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
 
 declare global {
@@ -68,7 +68,7 @@ const usePactGet = (alias: string) => {
   })
 }
 
-const usePactRequest = (option: AnyObject, alias: string) => {
+const usePactRequest = (option: Partial<RequestOptionType>, alias: string) => {
   cy.request(option).as(alias)
   // Store request url and method to a global item as cy.request.get() doesn't
   // provide related information
