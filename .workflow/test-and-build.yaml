@@ -3,7 +3,7 @@ name: Build, test, test examples
 on:
   push:
   pull_request:
-    branches: [master]
+    branches: *
 
 jobs:
   build-and-test:
