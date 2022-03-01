@@ -1,8 +1,9 @@
 name: Release
 on:
-  workflows: [Build and test]
-  types: [completed]
-  branches: [main]
+  workflow_run:
+    workflows: [Build and test]
+    types: [completed]
+    branches: [main]
 
 jobs:
   build:
