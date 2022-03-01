@@ -1,0 +1,18 @@
+name: Release
+on:
+  workflows: [Build and test]
+  types: [completed]
+  branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - name: Configure committer
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Bump version
+        uses: qzb/standard-version@v1
