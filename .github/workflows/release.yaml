@@ -14,7 +14,7 @@ jobs:
       - name: Configure committer
         run: |
           git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
+          git config user.email "13126965+B3nnyL@users.noreply.github.com"
       - name: Bump Version
         uses: qzb/standard-version-action@v1.0.5
       - name: Push changelogs
