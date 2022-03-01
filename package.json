@@ -1,5 +1,5 @@
 {
-  "name": "@pactflow/pact-cypress",
+  "name": "@pactflow/pact-cypress-adaptor",
   "version": "1.0.0",
   "description": "A cypress plugin for pact",
   "main": "./dist/index.js",
