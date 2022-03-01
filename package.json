@@ -1,7 +1,7 @@
 {
   "name": "@pactflow/pact-cypress-adaptor",
   "version": "1.0.0",
-  "description": "A cypress plugin for pact",
+  "description": "A cypress adaptor for pact",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -17,6 +17,7 @@
     "cypress": "^9.5.0",
     "eslint": "^8.9.0",
     "jest": "^27.5.1",
+    "standard-version": "^9.3.2",
     "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
   },
