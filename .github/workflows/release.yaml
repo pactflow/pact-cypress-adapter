@@ -1,13 +1,9 @@
 name: Release
 on:
-  workflow_run:
-    workflows: [Build and test]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +13,6 @@ jobs:
       - run: npm ci
       - uses: fregante/setup-git-user@v1
       - name: Bump version and push changelogs
-        if: "!contains(github.event.head_commit.message, 'skip-release')"
         run: |
-         echo "skip"
+          npm run release
+          git push origin main --follow-tags
