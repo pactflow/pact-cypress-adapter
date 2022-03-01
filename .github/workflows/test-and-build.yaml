@@ -1,9 +1,11 @@
-name: Build, test, test examples
+name: Build and test
 
 on:
-  push:
   pull_request:
-    branches: *
+    types: [opened]
+  push:
+      branches:
+        - '*'
 
 jobs:
   build-and-test:
