@@ -17,7 +17,6 @@ jobs:
       - run: npm ci
       - uses: fregante/setup-git-user@v1
       - name: Bump version and push changelogs
+        if: "!contains(github.event.head_commit.message, 'skip-release')"
         run: |
-          npm run release
-          cat CHANGELOG.md
-          git push --follow-tags origin main
+         echo "skip"
