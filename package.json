@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --testPathPattern=test",
     "build": "tsc",
-    "test:example": "cd example/todo-example && npm i && npm run start && npm run cypress:run"
+    "test:example": "cd example/todo-example && npm i && npm run build && npm run http-server && npm run cypress:run"
   },
   "author": "",
   "license": "MIT",
