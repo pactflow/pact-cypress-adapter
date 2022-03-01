@@ -1,7 +1,7 @@
 # folders
 pacts/
 test/
-examples/
+example/
 .workflow
 # files
 .babelrc
