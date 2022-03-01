@@ -15,8 +15,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
       - run: npm ci
       - uses: fregante/setup-git-user@v1
-      - name: Bump Version
-        uses: qzb/standard-version-action@v1.0.5
-      - name: Push changelogs
+      - name: Bump version and push changelogs
         run: |
+          npm run release
           git push --follow-tags origin main
