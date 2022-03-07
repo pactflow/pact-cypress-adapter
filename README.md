@@ -23,6 +23,18 @@ Finally, update cypress/support/index.js file to include cypress-pact commands v
 import 'package-name'
 ```
 
+## Configuration
+By default, this plugin omits most HTTP headers except `authorization`, `content-type` and `accept`.
+To include customised headers in your pact, add allowed headers as a list of string in `cypress.json` under key `pactHeaderAllowlist`. Eg. in your `cypress.json`
+```js
+{
+    ...otherCypressConfig,
+    'pactHeaderAllowlist': ['my-header-1', 'referer']
+}
+
+```
+
+Note: Header allowlist can be set up at test level. Check command (cy.setupPactHeaderAllowlist)[/#cy.setupPactHeaderAllowlist([header])]
 
 ## Commands 
 ### cy.setupPact(consumerName:string, providerName: string)
@@ -53,6 +65,24 @@ after(() => {
 
 ```
 
+### cy.setupPactHeaderAllowlist([header])
+Add a list of headers that will be included in a pact at test case level
+
+**Example**
+```js
+before(() => {
+    cy.setupPact('ui-consumer', 'api-provider')
+    cy.intercept('GET', '/users').as('getAllUsers')
+    cy.setupPactHeaderAllowlist([''])
+})
+
+//... cypress test
+
+after(() => {
+    cy.usePactWait(['getAllUsers'])
+})
+
+```
 
 ### cy.usePactRequest(option, alias) and cy.usePactGet([alias] | alias)
 Use `cy.usePactRequest` to initiate network calls and use `cy.usePactGet` to record network request and response to a pact file.
