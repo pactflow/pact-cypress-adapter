@@ -6,7 +6,8 @@ describe('example to-do app', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '**/api/todo'
+        url: '**/api/todo',
+        headers: { 'x-random': 'random' }
       },
       {
         statusCode: 200,
@@ -14,6 +15,7 @@ describe('example to-do app', () => {
         headers: { 'access-control-allow-origin': '*' }
       }
     ).as('getTodos')
+    cy.setupPactHeaderAllowlist(['x-random'])
     cy.visit('http://localhost:3000/')
   })
 

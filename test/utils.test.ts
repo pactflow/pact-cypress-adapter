@@ -1,4 +1,4 @@
-import { formatAlias, constructPactFile, readFileAsync } from '../src/utils'
+import { formatAlias, constructPactFile, readFileAsync, filterHeaders } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
 
@@ -76,6 +76,7 @@ describe('constructPactFile', () => {
         consumerName: 'ui-consumer',
         providerName: 'todo-api'
       },
+      [],
       existingContent
     )
     expect(result.interactions.length).toBe(2)
@@ -133,4 +134,16 @@ describe('readFile',  () => {
     const fileContent = await readFileAsync(promises, 'hello')
     expect(fileContent).toBe('hello')
   })
+})
+
+
+describe('filterHeaders', () => {
+ it('should return filtered header', () => {
+   const result = filterHeaders({
+     'host': 'meh',
+     'x-pactflow': 'lol',
+     'referer': 'ref'
+   }, ['x-pactflow'])
+   expect(result).toStrictEqual({'x-pactflow': 'lol'})
+ })
 })

@@ -4,7 +4,10 @@ function App() {
   const [todos, setTodos] = useState([])
   useEffect(() => {
     async function fetchTodos() {
-      let response = await fetch('/api/todo')
+      let response = await fetch('/api/todo', {
+        headers: {
+        'x-random': 'random'
+      }})
       response = await response.json()
       setTodos(response)
     }

@@ -1,5 +1,5 @@
 import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
-import { formatAlias, writePact } from './utils'
+import { formatAlias, writePact, getHeaderAllowlist } from './utils'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -8,7 +8,8 @@ declare global {
       usePactWait: (alias: AliasType) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
       usePactGet: (alias: string, pactConfig: PactConfigType) => Chainable
-      setupPact:(consumerName: string, providerName: string) => Chainable<null>
+      setupPact: (consumerName: string, providerName: string) => Chainable<null>
+      setupPactHeaderAllowlist:(headers: string[]) => Chainable<null>
     }
   }
 }
@@ -19,8 +20,13 @@ const pactConfig: PactConfigType = {
 }
 
 const setupPact = (consumerName: string, providerName: string) => {
-  pactConfig['consumerName'] =  consumerName
-  pactConfig['providerName'] =  providerName
+  pactConfig['consumerName'] = consumerName
+  pactConfig['providerName'] = providerName
+}
+
+let pactHeaderAllowlist: string[] = []
+const setupPactHeaderAllowlist = (headerList: string[]) => {
+  pactHeaderAllowlist = getHeaderAllowlist(headerList)
 }
 
 const usePactWait = (alias: AliasType) => {
@@ -30,13 +36,13 @@ const usePactWait = (alias: AliasType) => {
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
       intercepts.forEach((intercept, index) => {
-        writePact(intercept, `${testCaseTitle}-${formattedAlias[index]}`, pactConfig)
+        writePact(intercept, `${testCaseTitle}-${formattedAlias[index]}`, pactConfig, pactHeaderAllowlist)
       })
     })
   } else {
     cy.wait(formattedAlias).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
-      writePact(flattenIntercept, `${testCaseTitle}`, pactConfig)
+      writePact(flattenIntercept, `${testCaseTitle}`, pactConfig, pactHeaderAllowlist)
     })
   }
 }
@@ -48,7 +54,6 @@ const usePactGet = (alias: string) => {
   const testCaseTitle = Cypress.currentTest.title
   formattedAlias.forEach((alias) => {
     cy.get(alias).then((response: any) => {
-        console.log(response)
       const fullRequestAndResponse = {
         request: {
           method: requestDataMap[alias].method,
@@ -63,7 +68,7 @@ const usePactGet = (alias: string) => {
           statusText: response.statusText
         }
       } as XHRRequestAndResponse
-      writePact(fullRequestAndResponse, `${testCaseTitle}-${alias}`, pactConfig)
+      writePact(fullRequestAndResponse, `${testCaseTitle}-${alias}`, pactConfig, pactHeaderAllowlist)
     })
   })
 }
@@ -79,3 +84,4 @@ Cypress.Commands.add('usePactWait', usePactWait)
 Cypress.Commands.add('usePactRequest', usePactRequest)
 Cypress.Commands.add('usePactGet', usePactGet)
 Cypress.Commands.add('setupPact', setupPact)
+Cypress.Commands.add('setupPactHeaderAllowlist', setupPactHeaderAllowlist)
