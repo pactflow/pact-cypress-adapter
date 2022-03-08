@@ -6,7 +6,10 @@ describe('example to-do app', () => {
     cy.usePactRequest(
       {
         method: 'GET',
-        url: 'https://jsonplaceholder.typicode.com/todos'
+        url: 'https://jsonplaceholder.typicode.com/todos',
+        headers: {
+          'ignore-me-global': 'me'
+        }
       },
       'getTodosGet'
     )
