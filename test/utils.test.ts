@@ -1,6 +1,7 @@
-import { formatAlias, constructPactFile, readFileAsync } from '../src/utils'
+import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
+import * as Cypress from 'cypress'
 
 import { promises, Stats } from 'fs'
 
@@ -76,6 +77,7 @@ describe('constructPactFile', () => {
         consumerName: 'ui-consumer',
         providerName: 'todo-api'
       },
+      [],
       existingContent
     )
     expect(result.interactions.length).toBe(2)
@@ -104,7 +106,7 @@ describe('constructPactFile', () => {
   })
 })
 
-describe('readFile',  () => {
+describe('readFile', () => {
   it('should return null when no file is found', async () => {
     const mock = jest.spyOn(promises, 'stat')
     mock.mockReturnValue(
@@ -132,5 +134,19 @@ describe('readFile',  () => {
     )
     const fileContent = await readFileAsync(promises, 'hello')
     expect(fileContent).toBe('hello')
+  })
+})
+
+describe('omitHeaders', () => {
+  it('should omit auto-generated headers and header from customised blocklist', () => {
+    const result = omitHeaders(
+      {
+        referer: 'me',
+        'x-pactflow': 'lol',
+        'ignore-me': 'ignore'
+      },
+      ['ignore-me']
+    )
+    expect(result).toStrictEqual({ 'x-pactflow': 'lol' })
   })
 })

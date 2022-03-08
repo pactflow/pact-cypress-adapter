@@ -4,7 +4,13 @@ function App() {
   const [todos, setTodos] = useState([])
   useEffect(() => {
     async function fetchTodos() {
-      let response = await fetch('/api/todo')
+      let response = await fetch('/api/todo', {
+        headers: {
+          'x-pactflow': 'blah',
+          'ignore-me': 'ignore',
+          'ignore-me-global': 'ignore'
+        }
+      })
       response = await response.json()
       setTodos(response)
     }
