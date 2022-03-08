@@ -36,7 +36,7 @@ import 'package-name'
 
 ## Configuration
 By default, this plugin omits most cypress auto-generated HTTP headers. 
-To exclude more customised headers in your pact, add allowed headers as a list of string in `cypress.json` under key `env.headersBlocklist`. Eg. in your `cypress.json`
+To exclude other headers in your pact, add them as a list of strings in `cypress.json` under key `env.headersBlocklist`. Eg. in your `cypress.json`
 ```js
 {
     ...otherCypressConfig,
