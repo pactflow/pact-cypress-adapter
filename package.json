@@ -2,6 +2,12 @@
   "name": "@pactflow/pact-cypress-adaptor",
   "version": "1.1.0",
   "description": "A cypress adaptor for pact",
+  "keywords": [
+    "pact",
+    "cypress",
+    "contract testing",
+    "ui"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -26,5 +32,13 @@
     "@types/node": "^17.0.21",
     "@types/lodash": "^4.14.178",
     "lodash": "^4.17.21"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pactflow/cypress-pact.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pactflow/cypress-pact/issues"
+  },
+  "homepage": "https://github.com/pactflow/cypress-pact#readme"
 }
