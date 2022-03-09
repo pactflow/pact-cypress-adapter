@@ -1,6 +1,7 @@
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
+import { env } from 'process'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -25,12 +26,14 @@ const setupPact = (consumerName: string, providerName: string) => {
   pactConfig['providerName'] = providerName
 }
 
-let headersBlocklist: string[] = Cypress.env('headersBlocklist') || []
 const ignoreDefaultBlocklist = Cypress.env('ignoreDefaultBlocklist') || false
+const globalBlocklist = Cypress.env('headersBlocklist') || []
+let headersBlocklist: string[] = ignoreDefaultBlocklist
+  ? globalBlocklist
+  : [...globalBlocklist, ...AUTOGEN_HEADER_BLOCKLIST]
+
 const setupPactHeaderBlocklist = (headers: string[]) => {
-  headersBlocklist = ignoreDefaultBlocklist
-    ? [...headers, ...headersBlocklist]
-    : [...headers, ...headersBlocklist, ...AUTOGEN_HEADER_BLOCKLIST]
+  headersBlocklist = [...headers, ...headersBlocklist]
 }
 
 const usePactWait = (alias: AliasType) => {
