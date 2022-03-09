@@ -8,11 +8,14 @@ describe('example to-do app', () => {
         method: 'GET',
         url: 'https://jsonplaceholder.typicode.com/todos',
         headers: {
-          'ignore-me-global': 'me'
+          'x-pactflow': 'blah',
+          'ignore-me': 'ignore',
+          'ignore-me-globally': 'ignore'
         }
       },
       'getTodosGet'
     )
+    cy.setupPactHeaderBlocklist(['ignore-me'])
     cy.visit('http://localhost:3000/')
   })
 
