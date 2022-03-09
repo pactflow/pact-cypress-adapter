@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/pactflow/cypress-pact/compare/v1.1.0...v1.2.0) (2022-03-09)
+
+
+### Features
+
+* add blocklist and blocklist api ([d675362](https://github.com/pactflow/cypress-pact/commit/d675362dc394e32fe09b6af004fd62b4d47c3fde))
+* add ignoreDefaultBlocklist ([ea99189](https://github.com/pactflow/cypress-pact/commit/ea9918993e7cd623b879adb1489f962c10af7868))
+
+
+### Bug Fixes
+
+* example 404 issues ([979fcda](https://github.com/pactflow/cypress-pact/commit/979fcda111cf9a1a5a509bcc814f41aa9b42e9ec))
+* update readme and example ([3141fea](https://github.com/pactflow/cypress-pact/commit/3141fea7fe581133e7e692e61c362548c0bca837))
+
 ## 1.1.0 (2022-03-01)
 
 
