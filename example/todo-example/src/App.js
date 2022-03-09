@@ -18,7 +18,7 @@ function App() {
   }, [])
   return (
     <div className="App">
-      {todos.length === 1 ? (
+      {todos.length === 0 ? (
         <p>No todos is found</p>
       ) : (
         <ul>
