@@ -54,7 +54,6 @@ const usePactGet = (alias: string) => {
   const testCaseTitle = Cypress.currentTest.title
   formattedAlias.forEach((alias) => {
     cy.get(alias).then((response: any) => {
-      console.log(response)
       const fullRequestAndResponse = {
         request: {
           method: requestDataMap[alias].method,
