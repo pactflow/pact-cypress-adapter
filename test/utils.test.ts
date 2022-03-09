@@ -1,4 +1,4 @@
-import { formatAlias, constructPactFile, readFileAsync } from '../src/utils'
+import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
 
@@ -69,15 +69,16 @@ describe('constructPactFile', () => {
         statusText: 'Created'
       }
     } as XHRRequestAndResponse
-    const result = constructPactFile(
-      newIntercept,
-      'create todo',
-      {
+    const result = constructPactFile({
+      intercept: newIntercept,
+      testCaseTitle: 'create todo',
+      pactConfig: {
         consumerName: 'ui-consumer',
         providerName: 'todo-api'
       },
-      existingContent
-    )
+      blocklist: [],
+      content: existingContent
+    })
     expect(result.interactions.length).toBe(2)
     expect(result.interactions[1].description).toBe('create todo')
   })
@@ -94,9 +95,13 @@ describe('constructPactFile', () => {
         statusText: 'Created'
       }
     } as XHRRequestAndResponse
-    const result = constructPactFile(newIntercept, 'create todo', {
-      consumerName: 'ui-consumer',
-      providerName: 'todo-api'
+    const result = constructPactFile({
+      intercept: newIntercept,
+      testCaseTitle: 'create todo',
+      pactConfig: {
+        consumerName: 'ui-consumer',
+        providerName: 'todo-api'
+      }
     })
     expect(result.consumer.name).toBe('ui-consumer')
     expect(result.provider.name).toBe('todo-api')
@@ -104,7 +109,7 @@ describe('constructPactFile', () => {
   })
 })
 
-describe('readFile',  () => {
+describe('readFile', () => {
   it('should return null when no file is found', async () => {
     const mock = jest.spyOn(promises, 'stat')
     mock.mockReturnValue(
@@ -132,5 +137,19 @@ describe('readFile',  () => {
     )
     const fileContent = await readFileAsync(promises, 'hello')
     expect(fileContent).toBe('hello')
+  })
+})
+
+describe('omitHeaders', () => {
+  it('should omit auto-generated headers and header from customised blocklist', () => {
+    const result = omitHeaders(
+      {
+        referer: 'me',
+        'x-pactflow': 'lol',
+        'ignore-me': 'ignore'
+      },
+      ['ignore-me', 'referer']
+    )
+    expect(result).toStrictEqual({ 'x-pactflow': 'lol' })
   })
 })

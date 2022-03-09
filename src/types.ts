@@ -1,3 +1,5 @@
+import { Interception } from 'cypress/types/net-stubbing'
+
 export type AliasType = string | string[]
 
 export type AnyObject = {
@@ -9,8 +11,10 @@ export type PactConfigType = {
   providerName: string
 }
 
+export type HeaderType = Record<string, string | string[]> | undefined
+
 type BaseXHR = {
-  headers: Record<string, string | string[]> | undefined
+  headers: HeaderType
   body: any | undefined
 }
 export type Interaction = {
@@ -38,7 +42,19 @@ export type XHRRequestAndResponse = {
   } & BaseXHR
 }
 
-type Encodings = 'ascii' | 'base64' | 'binary' | 'hex' | 'latin1' | 'utf8' | 'utf-8' | 'ucs2' | 'ucs-2' | 'utf16le' | 'utf-16le' | null
+type Encodings =
+  | 'ascii'
+  | 'base64'
+  | 'binary'
+  | 'hex'
+  | 'latin1'
+  | 'utf8'
+  | 'utf-8'
+  | 'ucs2'
+  | 'ucs-2'
+  | 'utf16le'
+  | 'utf-16le'
+  | null
 
 export type RequestOptionType = {
   auth: object
@@ -51,4 +67,12 @@ export type RequestOptionType = {
   method: string
   qs: object
   url: string
+}
+
+export type PactFileType = {
+  intercept: Interception | XHRRequestAndResponse
+  testCaseTitle: string
+  pactConfig: PactConfigType
+  blocklist?: string[],
+  content?: any 
 }

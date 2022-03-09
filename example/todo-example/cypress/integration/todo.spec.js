@@ -6,7 +6,12 @@ describe('example to-do app', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '**/api/todo'
+        url: '**/api/todo',
+        headers: {
+          'x-pactflow': 'blah',
+          'ignore-me': 'ignore',
+          'ignore-me-globally': 'ignore'
+        }
       },
       {
         statusCode: 200,
@@ -14,10 +19,13 @@ describe('example to-do app', () => {
         headers: { 'access-control-allow-origin': '*' }
       }
     ).as('getTodos')
+    cy.setupPactHeaderBlocklist(['ignore-me'])
     cy.visit('http://localhost:3000/')
   })
 
-  it('shows todo', () => {})
+  it('shows todo', () => {
+    cy.contains('clean desk')
+  })
 
   after(() => {
     cy.usePactWait('getTodos').its('response.statusCode').should('eq', 200)

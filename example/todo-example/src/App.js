@@ -4,15 +4,21 @@ function App() {
   const [todos, setTodos] = useState([])
   useEffect(() => {
     async function fetchTodos() {
-      let response = await fetch('/api/todo')
+      let response = await fetch('/api/todo', {
+        headers: {
+          'x-pactflow': 'blah',
+          'ignore-me': 'ignore',
+          'ignore-me-globally': 'ignore'
+        }
+      })
       response = await response.json()
       setTodos(response)
     }
     fetchTodos()
   }, [])
   return (
-    <div className="App"> {console.log(todos)}
-      {todos.length === 1 ? (
+    <div className="App">
+      {todos.length === 0 ? (
         <p>No todos is found</p>
       ) : (
         <ul>

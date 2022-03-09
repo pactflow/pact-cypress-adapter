@@ -6,11 +6,16 @@ describe('example to-do app', () => {
     cy.usePactRequest(
       {
         method: 'GET',
-        url: 'https://jsonplaceholder.typicode.com/todos'
+        url: 'https://jsonplaceholder.typicode.com/todos',
+        headers: {
+          'x-pactflow': 'blah',
+          'ignore-me': 'ignore',
+          'ignore-me-globally': 'ignore'
+        }
       },
       'getTodosGet'
     )
-    cy.visit('http://localhost:3000/')
+    cy.setupPactHeaderBlocklist(['ignore-me'])
   })
 
   it('shows todo', () => {

@@ -1,3 +1,7 @@
 {
-    "video": false
+    "video": false,
+    "env": {
+        "headersBlocklist": ["ignore-me-globally"],
+        "ignoreDefaultBlocklist": false
+    }
 }
