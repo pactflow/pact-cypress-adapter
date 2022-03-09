@@ -1,3 +1,4 @@
+import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
 
@@ -25,8 +26,11 @@ const setupPact = (consumerName: string, providerName: string) => {
 }
 
 let headersBlocklist: string[] = Cypress.env('headersBlocklist') || []
+const ignoreDefaultBlocklist = Cypress.env('ignoreDefaultBlocklist') || false
 const setupPactHeaderBlocklist = (headers: string[]) => {
-  headersBlocklist = [...headers, ...headersBlocklist]
+  headersBlocklist = ignoreDefaultBlocklist
+    ? [...headers, ...headersBlocklist]
+    : [...headers, ...headersBlocklist, ...AUTOGEN_HEADER_BLOCKLIST]
 }
 
 const usePactWait = (alias: AliasType) => {
@@ -36,13 +40,23 @@ const usePactWait = (alias: AliasType) => {
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
       intercepts.forEach((intercept, index) => {
-        writePact({intercept, testCaseTitle: `${testCaseTitle}-${formattedAlias[index]}`, pactConfig, blocklist: headersBlocklist})
+        writePact({
+          intercept,
+          testCaseTitle: `${testCaseTitle}-${formattedAlias[index]}`,
+          pactConfig,
+          blocklist: headersBlocklist
+        })
       })
     })
   } else {
     cy.wait(formattedAlias).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
-      writePact({intercept: flattenIntercept, testCaseTitle: `${testCaseTitle}`, pactConfig, blocklist: headersBlocklist})
+      writePact({
+        intercept: flattenIntercept,
+        testCaseTitle: `${testCaseTitle}`,
+        pactConfig,
+        blocklist: headersBlocklist
+      })
     })
   }
 }
@@ -68,7 +82,12 @@ const usePactGet = (alias: string) => {
           statusText: response.statusText
         }
       } as XHRRequestAndResponse
-      writePact({intercept: fullRequestAndResponse, testCaseTitle: `${testCaseTitle}-${alias}`, pactConfig, blocklist: headersBlocklist})
+      writePact({
+        intercept: fullRequestAndResponse,
+        testCaseTitle: `${testCaseTitle}-${alias}`,
+        pactConfig,
+        blocklist: headersBlocklist
+      })
     })
   })
 }

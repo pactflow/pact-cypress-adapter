@@ -25,17 +25,31 @@ import 'package-name'
 
 ## Configuration
 By default, this plugin omits most cypress auto-generated HTTP headers. 
+### Add more headers to blocklist
 To exclude other headers in your pact, add them as a list of strings in `cypress.json` under key `env.headersBlocklist`. Eg. in your `cypress.json`
 ```js
 {
     ...otherCypressConfig,
     "env": {
-        'headersBlocklist': ['ignore-me-globally']
+        "headersBlocklist": ["ignore-me-globally"]
     }
 }
 ```
 
-Note: Header blocklist can be set up at test level. Check command (cy.setupPactHeaderBlocklist)[/#cy.setupPactHeaderBlocklist([headers])]
+Note: Header blocklist can be set up at test level. Check command [cy.setupPactHeaderBlocklist](/#cy.setupPactHeaderBlocklist([headers]))
+
+### Ignore cypress auto-generated header blocklist
+To stop cypress auto-generated HTTP headers being omitted by the plugin,  set `env.ignoreDefaultBlocklist` in your `cypress.json`. Eg. in your `cypress.json`
+```js
+{
+    ...otherCypressConfig,
+    "env": {
+        "headersBlocklist": ["ignore-me-globally"],
+        "ignoreDefaultBlocklist": true
+
+    }
+}
+```
 
 ## Commands 
 ### cy.setupPact(consumerName:string, providerName: string)
