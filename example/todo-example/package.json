@@ -39,6 +39,7 @@
     ]
   },
   "devDependencies": {
+    "@pactflow/pact-cypress-adaptor": "^1.2.3",
     "cypress": "^9.5.0",
     "http-server": "^14.1.0"
   }
