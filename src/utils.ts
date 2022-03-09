@@ -1,7 +1,7 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { uniqBy, reverse, omit } from 'lodash'
-import { AliasType, AnyObject, Interaction, PactConfigType, XHRRequestAndResponse } from 'types'
+import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
 
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
@@ -13,20 +13,15 @@ export const formatAlias = (alias: AliasType) => {
 const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
   `cypress/pacts/${providerName}-${consumerName}.json`
 
-export const writePact = (
-  intercept: Interception | XHRRequestAndResponse,
-  testCaseTitle: string,
-  pactConfig: PactConfigType,
-  blocklist: string[] = []
-) => {
+export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: PactFileType) => {
   const filePath = constructFilePath(pactConfig)
   cy.task('readFile', filePath)
     .then((content) => {
       if (content) {
-        const contentString = content as string
-        return constructPactFile(intercept, testCaseTitle, pactConfig, blocklist, JSON.parse(contentString))
+        const parsedContent = JSON.parse(content as string)
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent })
       } else {
-        return constructPactFile(intercept, testCaseTitle, pactConfig, blocklist)
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist })
       }
     })
     .then((data) => {
@@ -37,11 +32,15 @@ export const writePact = (
     })
 }
 
-export const omitHeaders = (headers: AnyObject, blocklist: string[]) => {
+export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
   return omit(headers, [...blocklist, ...AUTOGEN_HEADER_BLOCKLIST])
 }
 
-const constructInteraction = (intercept: Interception | AnyObject, testTitle: string, blocklist: string[]): Interaction => {
+const constructInteraction = (
+  intercept: Interception | XHRRequestAndResponse,
+  testTitle: string,
+  blocklist: string[]
+): Interaction => {
   const path = new URL(intercept.request.url).pathname
   const search = new URL(intercept.request.url).search
   const query = new URLSearchParams(search).toString()
@@ -62,13 +61,7 @@ const constructInteraction = (intercept: Interception | AnyObject, testTitle: st
     }
   }
 }
-export const constructPactFile = (
-  intercept: Interception | XHRRequestAndResponse,
-  testTitle: string,
-  pactConfig: PactConfigType,
-  blocklist: string[] = [],
-  content?: any
-) => {
+export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content }: PactFileType) => {
   const pactSkeletonObject = {
     consumer: { name: pactConfig.consumerName },
     provider: { name: pactConfig.providerName },
@@ -81,7 +74,7 @@ export const constructPactFile = (
   }
 
   if (content) {
-    const interactions = [...content.interactions, constructInteraction(intercept, testTitle, blocklist)]
+    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
     const nonDuplicatesInteractions = reverse(uniqBy(reverse(interactions), 'description'))
     const data = {
       ...pactSkeletonObject,
@@ -93,7 +86,7 @@ export const constructPactFile = (
 
   return {
     ...pactSkeletonObject,
-    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testTitle, blocklist)]
+    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
   }
 }
 
