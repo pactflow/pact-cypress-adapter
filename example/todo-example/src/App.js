@@ -8,7 +8,7 @@ function App() {
         headers: {
           'x-pactflow': 'blah',
           'ignore-me': 'ignore',
-          'ignore-me-global': 'ignore'
+          'ignore-me-globally': 'ignore'
         }
       })
       response = await response.json()
@@ -17,7 +17,7 @@ function App() {
     fetchTodos()
   }, [])
   return (
-    <div className="App"> {console.log(todos)}
+    <div className="App">
       {todos.length === 1 ? (
         <p>No todos is found</p>
       ) : (

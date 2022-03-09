@@ -16,7 +16,6 @@ describe('example to-do app', () => {
       'getTodosGet'
     )
     cy.setupPactHeaderBlocklist(['ignore-me'])
-    cy.visit('http://localhost:3000/')
   })
 
   it('shows todo', () => {
