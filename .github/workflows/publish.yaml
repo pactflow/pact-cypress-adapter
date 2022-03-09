@@ -5,7 +5,7 @@ on:
     types:
       - completed
 jobs:
-  build:
+  publish:
     if: ${{ github.event.workflow_run.conclusion == 'success' && !contains(github.event.head_commit.message, 'skip-release') }}
     runs-on: ubuntu-latest
     steps:
@@ -16,6 +16,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - run: npm run build
-      - run: npm publish --public
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
