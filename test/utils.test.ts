@@ -1,7 +1,6 @@
 import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
-import * as Cypress from 'cypress'
 
 import { promises, Stats } from 'fs'
 
@@ -70,16 +69,16 @@ describe('constructPactFile', () => {
         statusText: 'Created'
       }
     } as XHRRequestAndResponse
-    const result = constructPactFile(
-      newIntercept,
-      'create todo',
-      {
+    const result = constructPactFile({
+      intercept: newIntercept,
+      testCaseTitle: 'create todo',
+      pactConfig: {
         consumerName: 'ui-consumer',
         providerName: 'todo-api'
       },
-      [],
-      existingContent
-    )
+      blocklist: [],
+      content: existingContent
+    })
     expect(result.interactions.length).toBe(2)
     expect(result.interactions[1].description).toBe('create todo')
   })
@@ -96,9 +95,13 @@ describe('constructPactFile', () => {
         statusText: 'Created'
       }
     } as XHRRequestAndResponse
-    const result = constructPactFile(newIntercept, 'create todo', {
-      consumerName: 'ui-consumer',
-      providerName: 'todo-api'
+    const result = constructPactFile({
+      intercept: newIntercept,
+      testCaseTitle: 'create todo',
+      pactConfig: {
+        consumerName: 'ui-consumer',
+        providerName: 'todo-api'
+      }
     })
     expect(result.consumer.name).toBe('ui-consumer')
     expect(result.provider.name).toBe('todo-api')

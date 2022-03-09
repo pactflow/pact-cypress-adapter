@@ -36,13 +36,13 @@ const usePactWait = (alias: AliasType) => {
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
       intercepts.forEach((intercept, index) => {
-        writePact(intercept, `${testCaseTitle}-${formattedAlias[index]}`, pactConfig, headersBlocklist)
+        writePact({intercept, testCaseTitle: `${testCaseTitle}-${formattedAlias[index]}`, pactConfig, blocklist: headersBlocklist})
       })
     })
   } else {
     cy.wait(formattedAlias).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
-      writePact(flattenIntercept, `${testCaseTitle}`, pactConfig, headersBlocklist)
+      writePact({intercept: flattenIntercept, testCaseTitle: `${testCaseTitle}`, pactConfig, blocklist: headersBlocklist})
     })
   }
 }
@@ -68,7 +68,7 @@ const usePactGet = (alias: string) => {
           statusText: response.statusText
         }
       } as XHRRequestAndResponse
-      writePact(fullRequestAndResponse, `${testCaseTitle}-${alias}`, pactConfig, headersBlocklist)
+      writePact({intercept: fullRequestAndResponse, testCaseTitle: `${testCaseTitle}-${alias}`, pactConfig, blocklist: headersBlocklist})
     })
   })
 }
