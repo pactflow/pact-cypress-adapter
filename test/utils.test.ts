@@ -148,7 +148,7 @@ describe('omitHeaders', () => {
         'x-pactflow': 'lol',
         'ignore-me': 'ignore'
       },
-      ['ignore-me']
+      ['ignore-me', 'referer']
     )
     expect(result).toStrictEqual({ 'x-pactflow': 'lol' })
   })

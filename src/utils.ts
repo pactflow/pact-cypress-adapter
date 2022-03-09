@@ -1,5 +1,4 @@
 import { Interception } from 'cypress/types/net-stubbing'
-import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { uniqBy, reverse, omit } from 'lodash'
 import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
 
@@ -33,7 +32,7 @@ export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: P
 }
 
 export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
-  return omit(headers, [...blocklist, ...AUTOGEN_HEADER_BLOCKLIST])
+  return omit(headers, [...blocklist])
 }
 
 const constructInteraction = (
