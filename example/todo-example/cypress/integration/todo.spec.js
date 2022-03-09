@@ -23,7 +23,9 @@ describe('example to-do app', () => {
     cy.visit('http://localhost:3000/')
   })
 
-  it('shows todo', () => {})
+  it('shows todo', () => {
+    cy.contains('clean desk')
+  })
 
   after(() => {
     cy.usePactWait('getTodos').its('response.statusCode').should('eq', 200)
