@@ -10,7 +10,7 @@ describe('example to-do app', () => {
         headers: {
           'x-pactflow': 'blah',
           'ignore-me': 'ignore',
-          'ignore-me-global': 'ignore'
+          'ignore-me-globally': 'ignore'
         }
       },
       {
