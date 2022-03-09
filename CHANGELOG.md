@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.3](https://github.com/pactflow/cypress-pact/compare/v1.2.2...v1.2.3) (2022-03-09)
+
+
+### Bug Fixes
+
+* missing auto generated headers when no setupPactHeaderBlocklist is called ([955d215](https://github.com/pactflow/cypress-pact/commit/955d2150c9d11423e1e91ece6581636bbcc1e8e3))
+
 ### [1.2.2](https://github.com/pactflow/cypress-pact/compare/v1.2.1...v1.2.2) (2022-03-09)
 
 ### [1.2.1](https://github.com/pactflow/cypress-pact/compare/v1.2.0...v1.2.1) (2022-03-09)
