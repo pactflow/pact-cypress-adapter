@@ -1,21 +1,21 @@
-# Pact Cypress Adaptor
+# Pact Cypress Adapter
 Generate pact contracts from cypress test.
 
 ## Installation
 - NPM:
 ```bash
-npm i -D @pactflow/pact-cypress-adaptor
+npm i -D @pactflow/pact-cypress-adapter
 ```
 
 - yarn:
 ```bash
-yarn add -D @pactflow/pact-cypress-adaptor
+yarn add -D @pactflow/pact-cypress-adapter
 ```
 
 Then, setup your cypress plugin at `cypress/plugins/index.js`
 
 ```js
-const pactCypressPlugin = require('@pactflow/pact-cypress-adaptor/dist/plugin')
+const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
 const fs = require('fs')
 
 module.exports = (on, config) => {
@@ -25,7 +25,7 @@ module.exports = (on, config) => {
 
 Finally, update cypress/support/index.js file to include cypress-pact commands via adding:
 ```js
-import '@pactflow/pact-cypress-adaptor'
+import '@pactflow/pact-cypress-adapter'
 ```
 
 ## Configuration
