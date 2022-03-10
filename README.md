@@ -17,12 +17,12 @@ Original README:
 Generate pact contracts from cypress test.
 
 ## Installation
-- NPM:
+**NPM**:
 ```bash
 npm i -D @pactflow/pact-cypress-adapter
 ```
 
-- yarn:
+**yarn**:
 ```bash
 yarn add -D @pactflow/pact-cypress-adapter
 ```
@@ -103,6 +103,7 @@ after(() => {
 ### cy.setupPactHeaderBlocklist([headers])
 Add a list of headers that will be excluded in a pact at test case level
 
+**Example**
 ```js
 before(() => {
     cy.setupPact('ui-consumer', 'api-provider')
