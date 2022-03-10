@@ -12,7 +12,8 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist/*.js",
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "dist/index.d.ts"
   ],
   "scripts": {
     "test": "jest --testPathPattern=test",
