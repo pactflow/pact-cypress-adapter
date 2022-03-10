@@ -15,7 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
-import '@pactflow/pact-cypress-adaptor'
+import '@pactflow/pact-cypress-adapter'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
