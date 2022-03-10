@@ -1,7 +1,7 @@
 {
-  "name": "@pactflow/pact-cypress-adaptor",
+  "name": "@pactflow/pact-cypress-adapter",
   "version": "1.2.4",
-  "description": "A cypress adaptor for pact",
+  "description": "A cypress adapter for pact",
   "keywords": [
     "pact",
     "cypress",
@@ -39,10 +39,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pactflow/cypress-pact-adaptor.git"
+    "url": "git+https://github.com/pactflow/cypress-pact-adapter.git"
   },
   "bugs": {
-    "url": "https://github.com/pactflow/cypress-pact-adaptor/issues"
+    "url": "https://github.com/pactflow/cypress-pact-adapter/issues"
   },
-  "homepage": "https://github.com/pactflow/cypress-pact-adaptor#readme"
+  "homepage": "https://github.com/pactflow/cypress-pact-adapter#readme"
 }
