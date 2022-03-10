@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.6](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.5...v1.2.6) (2022-03-10)
+
+
+### Bug Fixes
+
+* missing index.d.ts ([22642b6](https://github.com/pactflow/cypress-pact-adapter/commit/22642b6681ce7446aad68c9409e8ef93ae71f042))
+
 ### [1.2.5](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.4...v1.2.5) (2022-03-10)
 
 ### [1.2.4](https://github.com/pactflow/cypress-pact-adaptor/compare/v1.2.3...v1.2.4) (2022-03-09)

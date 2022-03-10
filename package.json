@@ -1,6 +1,6 @@
 {
   "name": "@pactflow/pact-cypress-adapter",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "A cypress adapter for pact",
   "keywords": [
     "pact",
