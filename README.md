@@ -16,6 +16,8 @@ Original README:
 >>>>>>> 0342bd7 (chore: rename package)
 Generate pact contracts from cypress test.
 
+[![Build and test](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter)
+
 ## Installation
 **NPM**:
 ```bash
