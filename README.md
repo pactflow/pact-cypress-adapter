@@ -108,12 +108,22 @@ after(() => {
 ### cy.usePactRequest(option, alias) and cy.usePactGet([alias] | alias)
 Use `cy.usePactRequest` to initiate network calls and use `cy.usePactGet` to record network request and response to a pact file.
 
+Convenience wrapper for `cy.request(options).as(alias)` 
+
+- Accepts a valid Cypress request options argument [Cypress request options argument](https://docs.cypress.io/api/commands/request#Arguments) 
+
 **Example**
 ```js
 
 before(() => {
     cy.setupPact('ui-consumer', 'api-provider')
-    cy.usePactRequest('GET', '/users').as('getAllUsers')
+    cy.usePactRequest(
+      {
+        method: 'GET',
+        url: '/users',
+      },
+      'getAllUsers'
+    )
 })
 
 //... cypress test
