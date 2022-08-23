@@ -1,7 +1,7 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { uniqBy, reverse, omit } from 'lodash'
 import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
-
+const pjson = require('../package.json')
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
     return [...alias].map((a) => `@${a}`)
@@ -68,6 +68,10 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
     metadata: {
       pactSpecification: {
         version: '2.0.0'
+      },
+      client: {
+        name: 'pact-cypress-adapter',
+        version: pjson.version
       }
     }
   }

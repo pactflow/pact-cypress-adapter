@@ -1,6 +1,7 @@
 import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
 import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
+const pjson = require('../package.json')
 
 import { promises, Stats } from 'fs'
 
@@ -55,6 +56,10 @@ describe('constructPactFile', () => {
       metadata: {
         pactSpecification: {
           version: '2.0.0'
+        },
+        client: {
+          name: 'pact-cypress-adapter',
+          version: pjson.version
         }
       }
     }
