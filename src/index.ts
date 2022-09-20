@@ -39,10 +39,7 @@ const setupPactHeaderBlocklist = (headers: string[]) => {
 const usePactWait = (alias: AliasType) => {
   const formattedAlias = formatAlias(alias)
   // Cypress versions older than 8.2 do not have a currentTest objects
-  var testCaseTitle = ""
-  if (Cypress.hasOwnProperty("currentTest")){
-    testCaseTitle = Cypress.currentTest.title 
-  }
+  const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
   //NOTE: spread only works for array containing more than one item
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
@@ -73,10 +70,8 @@ const requestDataMap: AnyObject = {}
 const usePactGet = (alias: string) => {
   const formattedAlias = formatAlias(alias)
   // Cypress versions older than 8.2 do not have a currentTest objects
-  var testCaseTitle = ""
-  if (Cypress.hasOwnProperty("currentTest")){
-    testCaseTitle = Cypress.currentTest.title 
-  }
+  const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
+
   formattedAlias.forEach((alias) => {
     cy.get(alias).then((response: any) => {
       const fullRequestAndResponse = {
