@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.6...v1.3.0) (2022-09-22)
+
+
+### Features
+
+* Add client name/version into pact file ([bf1c86d](https://github.com/pactflow/cypress-pact-adapter/commit/bf1c86d475a48f50265691a14f477f7c5fcebae2))
+
 ### [1.2.6](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.5...v1.2.6) (2022-03-10)
 
 
