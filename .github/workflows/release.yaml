@@ -10,6 +10,10 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - uses: fregante/setup-git-user@v1
       - name: Bump version and push changelogs
