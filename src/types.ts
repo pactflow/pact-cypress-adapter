@@ -1,4 +1,4 @@
-import { Interception } from 'cypress/types/net-stubbing'
+import { Interception, RouteMatcher, RouteHandler } from 'cypress/types/net-stubbing'
 
 export type AliasType = string | string[]
 
@@ -26,7 +26,8 @@ export type Interaction = {
     query: string
   } & BaseXHR
   response: {
-    status: string | number | undefined
+    status: string | number | undefined,
+    matchingRules?: MatchingRulesType,
   } & BaseXHR
 }
 
@@ -69,10 +70,43 @@ export type RequestOptionType = {
   url: string
 }
 
+type MatchingRulesTypeV2 = {
+  [K in string | number]: {
+    match: 'type' | 'regex',
+    regex?: string,
+    min?: number,
+    max?: number,
+  }
+}
+
+type MatchingRulesTypeV3 = {
+  body: {
+    [K in string | number]: {
+      "matchers": Array<{
+        match: 'type' | 'regex' | 'include'  | 'integer' | 'decimal' | 'null' | 'datetime' | 'time' | 'date',
+        format?: string,
+        regex?: string,
+        min?: number,
+        max?: number,
+      }>,
+    }
+  }
+}
+
+export type MatchingRulesType = MatchingRulesTypeV2 | MatchingRulesTypeV3
+
+export type InterceptOptionType = {
+  method: string | any, // cypress does not export Method type
+  url: RouteMatcher,
+  response: RouteHandler,
+  matchingRules: MatchingRulesType
+};
+
 export type PactFileType = {
   intercept: Interception | XHRRequestAndResponse
   testCaseTitle: string
   pactConfig: PactConfigType
   blocklist?: string[],
-  content?: any 
+  content?: any,
+  matchingRules?: MatchingRulesType,
 }
