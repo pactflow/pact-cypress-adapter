@@ -32,7 +32,22 @@ export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist, mat
 }
 
 export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
-  return omit(headers, [...blocklist])
+  return omit(headers, [...blocklist]);
+}
+
+export const sortHeaders = (headers: HeaderType) => {
+
+  if (!headers) {
+    return headers;
+  }
+
+  return Object.keys(headers).sort().reduce(
+    (obj:Record<string, string | string[]>, key) => {
+      obj[key] = headers[key];
+      return obj;
+    },
+    {}
+  );
 }
 
 const constructInteraction = (
@@ -50,13 +65,13 @@ const constructInteraction = (
     request: {
       method: intercept.request.method,
       path: path,
-      headers: omitHeaders(intercept.request.headers, blocklist),
+      headers: sortHeaders(omitHeaders(intercept.request.headers, blocklist)),
       body: intercept.request.body,
       query: query
     },
     response: {
       status: intercept.response?.statusCode,
-      headers: omitHeaders(intercept.response?.headers, blocklist),
+      headers: sortHeaders(omitHeaders(intercept.response?.headers, blocklist)),
       body: intercept.response?.body,
       matchingRules: matchingRules,
     }
