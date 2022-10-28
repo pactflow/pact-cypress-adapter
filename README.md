@@ -138,6 +138,49 @@ after(() => {
 
 ```
 
+### cy.usePactIntercept(option, alias)
+Use `cy.usePactIntercept` to intercept network calls and record response and it's matching rules to a pact file.
+
+- Accepts a valid Cypress request options argument [Cypress request options argument](https://docs.cypress.io/api/commands/request#Arguments) 
+
+**Example**
+```js
+
+before(() => {
+    cy.setupPact('ui-consumer', 'api-provider')
+    cy.usePactIntercept(
+      {
+          method: 'POST',
+          url: '**/admin_login',
+          response: {
+            "body": {
+                "token": "token_token_token",
+                "refresh_token": "refresh_token"
+            },
+            "headers": {
+                "content-type": "application/json"
+            },
+            "statusCode": 200
+          },
+          matchingRules: {
+            "$.body.token": {
+                "match": "type"
+            },
+            "$.body.refresh_token": {
+                "match": "type"
+            }
+          },
+      },
+      'adminLogin'
+    )
+})
+
+//... cypress test
+
+after(() => {
+    cy.usePactWait(['adminLogin']).
+})
+
 ## Example Project
 Check out a simple react app example project at [/example/todo-example](/example/todo-example/)
 
