@@ -82,7 +82,8 @@ describe('constructPactFile', () => {
         providerName: 'todo-api'
       },
       blocklist: [],
-      content: existingContent
+      content: existingContent,
+      providerState: 'State'
     })
     expect(result.interactions.length).toBe(2)
     expect(result.interactions[1].description).toBe('create todo')
@@ -106,7 +107,8 @@ describe('constructPactFile', () => {
       pactConfig: {
         consumerName: 'ui-consumer',
         providerName: 'todo-api'
-      }
+      },
+      providerState: 'State'
     })
     expect(result.consumer.name).toBe('ui-consumer')
     expect(result.provider.name).toBe('todo-api')

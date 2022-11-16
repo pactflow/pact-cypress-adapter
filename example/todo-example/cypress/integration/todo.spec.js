@@ -28,6 +28,8 @@ describe('example to-do app', () => {
   })
 
   after(() => {
-    cy.usePactWait('getTodos').its('response.statusCode').should('eq', 200)
+    cy.usePactWait('getTodos', 'Service ok')
+      .its('response.statusCode')
+      .should('eq', 200)
   })
 })

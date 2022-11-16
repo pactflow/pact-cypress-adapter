@@ -22,7 +22,7 @@ describe('example to-do app', () => {
   })
 
   after(() => {
-    cy.usePactGet('getTodosGet')
+    cy.usePactGet('getTodosGet','Service ok')
       .its('response.statusCode')
       .should('eq', 200)
   })

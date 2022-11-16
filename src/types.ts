@@ -74,5 +74,6 @@ export type PactFileType = {
   testCaseTitle: string
   pactConfig: PactConfigType
   blocklist?: string[],
-  content?: any 
+  content?: any,
+  providerState: string,
 }

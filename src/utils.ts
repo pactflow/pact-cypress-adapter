@@ -12,15 +12,15 @@ export const formatAlias = (alias: AliasType) => {
 const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
   `cypress/pacts/${providerName}-${consumerName}.json`
 
-export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: PactFileType) => {
+export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist, providerState }: PactFileType) => {
   const filePath = constructFilePath(pactConfig)
   cy.task('readFile', filePath)
     .then((content) => {
       if (content) {
         const parsedContent = JSON.parse(content as string)
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent })
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent, providerState })
       } else {
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist })
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, providerState })
       }
     })
     .then((data) => {
@@ -38,14 +38,15 @@ export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
 const constructInteraction = (
   intercept: Interception | XHRRequestAndResponse,
   testTitle: string,
-  blocklist: string[]
+  blocklist: string[],
+  providerState: string
 ): Interaction => {
   const path = new URL(intercept.request.url).pathname
   const search = new URL(intercept.request.url).search
   const query = new URLSearchParams(search).toString()
   return {
     description: testTitle,
-    providerState: '',
+    providerState: providerState,
     request: {
       method: intercept.request.method,
       path: path,
@@ -60,7 +61,7 @@ const constructInteraction = (
     }
   }
 }
-export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content }: PactFileType) => {
+export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content, providerState }: PactFileType) => {
   const pactSkeletonObject = {
     consumer: { name: pactConfig.consumerName },
     provider: { name: pactConfig.providerName },
@@ -77,7 +78,7 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
   }
 
   if (content) {
-    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
+    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist,providerState)]
     const nonDuplicatesInteractions = reverse(uniqBy(reverse(interactions), 'description'))
     const data = {
       ...pactSkeletonObject,
@@ -89,7 +90,7 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
 
   return {
     ...pactSkeletonObject,
-    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
+    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testCaseTitle, blocklist,providerState)]
   }
 }
 

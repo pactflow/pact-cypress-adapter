@@ -7,9 +7,9 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
-      usePactWait: (alias: AliasType) => Chainable
+      usePactWait: (alias: AliasType, providerState?: string) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
-      usePactGet: (alias: string, pactConfig: PactConfigType) => Chainable
+      usePactGet: (alias: string, pactConfig: PactConfigType, providerState?: string) => Chainable
       setupPact: (consumerName: string, providerName: string) => Chainable<null>
       setupPactHeaderBlocklist: (headers: string[]) => Chainable<null>
     }
@@ -36,7 +36,7 @@ const setupPactHeaderBlocklist = (headers: string[]) => {
   headersBlocklist = [...headers, ...headersBlocklist]
 }
 
-const usePactWait = (alias: AliasType) => {
+const usePactWait = (alias: AliasType, providerState: string = '') => {
   const formattedAlias = formatAlias(alias)
   // Cypress versions older than 8.2 do not have a currentTest objects
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
@@ -48,7 +48,8 @@ const usePactWait = (alias: AliasType) => {
           intercept,
           testCaseTitle: `${testCaseTitle}-${formattedAlias[index]}`,
           pactConfig,
-          blocklist: headersBlocklist
+          blocklist: headersBlocklist,
+          providerState: providerState,
         })
       })
     })
@@ -59,7 +60,8 @@ const usePactWait = (alias: AliasType) => {
         intercept: flattenIntercept,
         testCaseTitle: `${testCaseTitle}`,
         pactConfig,
-        blocklist: headersBlocklist
+        blocklist: headersBlocklist,
+        providerState: providerState
       })
     })
   }
@@ -67,7 +69,7 @@ const usePactWait = (alias: AliasType) => {
 
 const requestDataMap: AnyObject = {}
 
-const usePactGet = (alias: string) => {
+const usePactGet = (alias: string, pactConfig: PactConfigType, providerState: string = '') => {
   const formattedAlias = formatAlias(alias)
   // Cypress versions older than 8.2 do not have a currentTest objects
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
@@ -92,7 +94,8 @@ const usePactGet = (alias: string) => {
         intercept: fullRequestAndResponse,
         testCaseTitle: `${testCaseTitle}-${alias}`,
         pactConfig,
-        blocklist: headersBlocklist
+        blocklist: headersBlocklist,
+        providerState:providerState,
       })
     })
   })
