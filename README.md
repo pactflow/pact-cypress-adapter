@@ -72,7 +72,7 @@ before(() => {
     cy.setupPact('ui-consumer', 'api-provider')
 })
 ```
-### cy.usePactWait([alias] | alias)
+### cy.usePactWait([alias] | alias, providerState)
 Listen to aliased `cy.intercept` network call(s), record network request and response to a pact file.
 [Usage and example](https://docs.cypress.io/api/commands/intercept) about `cy.intercept`
 
@@ -86,7 +86,7 @@ before(() => {
 //... cypress test
 
 after(() => {
-    cy.usePactWait(['getAllUsers'])
+    cy.usePactWait(['getAllUsers'], 'providerState')
 })
 
 ```
@@ -105,11 +105,11 @@ before(() => {
 //... cypress test
 
 after(() => {
-    cy.usePactWait(['getAllUsers'])
+    cy.usePactWait(['getAllUsers'], 'providerState')
 })
 ```
 
-### cy.usePactRequest(option, alias) and cy.usePactGet([alias] | alias)
+### cy.usePactRequest(option, alias) and cy.usePactGet([alias] | alias, providerState)
 Use `cy.usePactRequest` to initiate network calls and use `cy.usePactGet` to record network request and response to a pact file.
 
 Convenience wrapper for `cy.request(options).as(alias)` 
@@ -133,7 +133,7 @@ before(() => {
 //... cypress test
 
 after(() => {
-    cy.usePactGet(['getAllUsers'])
+    cy.usePactGet(['getAllUsers'], 'providerState')
 })
 
 ```
