@@ -15,7 +15,11 @@ export type HeaderType = Record<string, string | string[]> | undefined
 
 type BaseXHR = {
   headers: HeaderType
-  body: any | undefined
+  body?: any | undefined
+  oneOf?: any | undefined
+  allOf?: any | undefined
+  anyOf?: any | undefined
+  not?: any | undefined
 }
 export type Interaction = {
   description: string
@@ -58,7 +62,8 @@ type Encodings =
 
 export type RequestOptionType = {
   auth: object
-  body: AnyObject
+  body?: AnyObject
+  anyOf?: AnyObject
   encoding: Encodings
   followRedirect: boolean
   form: boolean

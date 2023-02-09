@@ -1,5 +1,8 @@
+# Endpoint Pact Cypress Adapter
+Custom implementation to handle OAS properties. Specifically to handle oneOf, allOf, anyOf, or none.
+
 # Pact Cypress Adapter
-[![Build and test](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter)
+[![Build and test](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@endpoint%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@endpoint%2Fpact-cypress-adapter)
 
 Generate Pact contracts from your existing Cypress tests. 
 
@@ -10,18 +13,18 @@ Generate Pact contracts from your existing Cypress tests.
 ## Installation
 **NPM**:
 ```bash
-npm i -D @pactflow/pact-cypress-adapter
+npm i -D @endpoint/pact-cypress-adapter
 ```
 
 **yarn**:
 ```bash
-yarn add -D @pactflow/pact-cypress-adapter
+yarn add -D @endpoint/pact-cypress-adapter
 ```
 
 Then, setup your cypress plugin at `cypress/plugins/index.js`
 
 ```js
-const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
+const pactCypressPlugin = require('@endpoint/pact-cypress-adapter/dist/plugin')
 const fs = require('fs')
 
 module.exports = (on, config) => {
@@ -31,7 +34,7 @@ module.exports = (on, config) => {
 
 Finally, update cypress/support/index.js file to include cypress-pact commands via adding:
 ```js
-import '@pactflow/pact-cypress-adapter'
+import '@endpoint/pact-cypress-adapter'
 ```
 
 ## Configuration

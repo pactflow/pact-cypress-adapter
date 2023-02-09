@@ -1,6 +1,13 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { uniqBy, reverse, omit } from 'lodash'
-import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
+import {
+  AliasType,
+  Interaction,
+  PactConfigType,
+  XHRRequestAndResponse,
+  PactFileType,
+  HeaderType,
+} from 'types'
 const pjson = require('../package.json')
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
@@ -43,7 +50,7 @@ const constructInteraction = (
   const path = new URL(intercept.request.url).pathname
   const search = new URL(intercept.request.url).search
   const query = new URLSearchParams(search).toString()
-  return {
+  let contractObject: Interaction = {
     description: testTitle,
     providerState: '',
     request: {
@@ -59,6 +66,22 @@ const constructInteraction = (
       body: intercept.response?.body
     }
   }
+
+  if (intercept.response?.body.oneOf) {
+    contractObject.response.oneOf = { body: intercept.response?.body.oneOf }
+    delete contractObject.response?.body
+  } else if (intercept.response?.body.allOf) {
+    contractObject.response.allOf = { body: intercept.response?.body.allOf }
+    delete contractObject.response?.body
+  } else if (intercept.response?.body.anyOf) {
+    contractObject.response.anyOf = { body: intercept.response?.body.anyOf }
+    delete contractObject.response?.body
+  } else if (intercept.response?.body.not) {
+    contractObject.response.not = { body: intercept.response?.body.not }
+    delete contractObject.response?.body
+  }
+
+  return contractObject
 }
 export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content }: PactFileType) => {
   const pactSkeletonObject = {
