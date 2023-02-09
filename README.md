@@ -1,6 +1,12 @@
 # Endpoint Pact Cypress Adapter
 Custom implementation to handle OAS3 properties. Specifically to handle oneOf, allOf, anyOf, or not.
 
+## To update this package
+```
+yarn build
+npm publish
+```
+
 # Pact Cypress Adapter
 [![Build and test](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@endpoint%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@endpoint%2Fpact-cypress-adapter)
 
