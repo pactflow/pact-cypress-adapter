@@ -62,8 +62,7 @@ type Encodings =
 
 export type RequestOptionType = {
   auth: object
-  body?: AnyObject
-  anyOf?: AnyObject
+  body: AnyObject
   encoding: Encodings
   followRedirect: boolean
   form: boolean
