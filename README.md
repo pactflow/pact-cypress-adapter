@@ -18,7 +18,8 @@ npm i -D @pactflow/pact-cypress-adapter
 yarn add -D @pactflow/pact-cypress-adapter
 ```
 
-Then, setup your cypress plugin at `cypress/plugins/index.js`
+## Setup for Cypress 10
+Setup your cypress plugin at `cypress/plugins/index.js`
 
 ```js
 const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
@@ -29,14 +30,43 @@ module.exports = (on, config) => {
 }
 ```
 
-Finally, update cypress/support/index.js file to include cypress-pact commands via adding:
+Finally, update `cypress/support/e2e.js` file to include cypress-pact commands via adding:
+```js
+import '@pactflow/pact-cypress-adapter'
+```
+
+## Setup for Cypress 9.x and below
+Setup your cypress plugin at `cypress/plugins/index.js`
+
+```js
+const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
+const fs = require('fs')
+
+module.exports = (on, config) => {
+  pactCypressPlugin(on, config, fs)
+}
+```
+
+Finally, update `cypress/support/index.js` file to include cypress-pact commands via adding:
 ```js
 import '@pactflow/pact-cypress-adapter'
 ```
 
 ## Configuration
 By default, this plugin omits most cypress auto-generated HTTP headers. 
-### Add more headers to blocklist
+
+### Add more headers to blocklist for Cypress 10
+To exclude other headers in your pact, add them as a list of strings in `cypress.config.{js,ts,mjs,cjs}` under key `env.headersBlocklist`. Eg. in your cypress config file
+```js
+{
+    ...otherCypressConfig,
+    "env": {
+        "headersBlocklist": ["ignore-me-globally"]
+    }
+}
+```
+
+### Add more headers to blocklist for Cypress 9.x and below
 To exclude other headers in your pact, add them as a list of strings in `cypress.json` under key `env.headersBlocklist`. Eg. in your `cypress.json`
 ```js
 {
@@ -139,5 +169,4 @@ after(() => {
 ```
 
 ## Example Project
-Check out a simple react app example project at [/example/todo-example](/example/todo-example/)
-
+Check out simple react app example projects at [/example/todo-example](/example/todo-example/). Example contains examples for Cypress 10.x and Cypress 9.x.
