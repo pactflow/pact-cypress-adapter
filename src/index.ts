@@ -1,7 +1,6 @@
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
-import { env } from 'process'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -9,7 +8,7 @@ declare global {
     interface Chainable {
       usePactWait: (alias: AliasType) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
-      usePactGet: (alias: string, pactConfig: PactConfigType) => Chainable
+      usePactGet: (alias: string) => Chainable
       setupPact: (consumerName: string, providerName: string) => Chainable<null>
       setupPactHeaderBlocklist: (headers: string[]) => Chainable<null>
     }
