@@ -35,14 +35,59 @@ import 'package-name'
 ```
 
 
-## Command 
+## Commands 
 ### cy.setupPact(consumerName:string, providerName: string)
+Configure your consumer and provider name
 
-### cy.usePactWait([alias])
+**Example**
+```js
+before(() => {
+    cy.setupPact('ui-consumer', 'api-provider')
+})
+```
+### cy.usePactWait([alias] | alias)
+Listen to aliased `cy.intercept` network call(s), record network request and response to a pact file.
+[Usage and example](https://docs.cypress.io/api/commands/intercept) about `cy.intercept`
 
-### cy.usePactRequest(option, alias) and cy.usePactGet([alias])
+**Example**
+```js
+before(() => {
+    cy.setupPact('ui-consumer', 'api-provider')
+    cy.intercept('GET', '/users').as('getAllUsers')
+})
+
+//... cypress test
+
+after(() => {
+    cy.usePactWait(['getAllUsers'])
+})
+
+```
 
 
-## Example
+### cy.usePactRequest(option, alias) and cy.usePactGet([alias] | alias)
+Use `cy.usePactRequest` to initiate network calls and use `cy.usePactGet` to record network request and response to a pact file.
 
+<<<<<<< HEAD
 For detailed examples, please check example project.
+=======
+**Example**
+```js
+
+before(() => {
+    cy.setupPact('ui-consumer', 'api-provider')
+    cy.usePactRequest('GET', '/users').as('getAllUsers')
+})
+
+//... cypress test
+
+after(() => {
+    cy.usePactGet(['getAllUsers'])
+})
+
+```
+
+## Example Project
+Check out a simple react app example project at [/example/todo-example](/example/todo-example/)
+
+>>>>>>> 8081e10 (chore: update readme)
