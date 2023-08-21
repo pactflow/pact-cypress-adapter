@@ -4,9 +4,17 @@ import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFile
 const pjson = require('../package.json')
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
-    return [...alias].map((a) => `@${a}`)
+    return [...alias].map((a) => addAtIfNotPresent(a))
   }
-  return [`@${alias}`]
+  return [addAtIfNotPresent(alias)]
+}
+
+const addAtIfNotPresent = (alias: string): string => {
+  if (alias.startsWith('@')) {
+    return alias;
+  } else {
+    return `@${alias}`;
+  }
 }
 
 const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
