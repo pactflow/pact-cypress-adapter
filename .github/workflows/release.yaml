@@ -6,16 +6,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - uses: fregante/setup-git-user@v1
+      - uses: fregante/setup-git-user@2e28d51939d2a84005a917d2f844090637f435f8 # v1
       - name: Bump version and push changelogs
         run: |
           npm run release
