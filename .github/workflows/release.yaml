@@ -15,7 +15,7 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - uses: fregante/setup-git-user@2e28d51939d2a84005a917d2f844090637f435f8 # v1
+      - uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2
       - name: Bump version and push changelogs
         run: |
           npm run release
