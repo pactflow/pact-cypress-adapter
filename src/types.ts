@@ -76,3 +76,5 @@ export type PactFileType = {
   blocklist?: string[],
   content?: any 
 }
+
+export type WaitOptions = NonNullable<Parameters<Cypress.Chainable['wait']>[1]>;
