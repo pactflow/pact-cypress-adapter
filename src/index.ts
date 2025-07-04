@@ -1,13 +1,12 @@
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
-import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
+import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType, WaitOptions } from 'types'
 import { formatAlias, writePact } from './utils'
-import { env } from 'process'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
-      usePactWait: (alias: AliasType) => Chainable
+      usePactWait: (alias: AliasType, options?: WaitOptions) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
       usePactGet: (alias: string, pactConfig: PactConfigType) => Chainable
       setupPact: (consumerName: string, providerName: string) => Chainable<null>
@@ -36,7 +35,7 @@ const setupPactHeaderBlocklist = (headers: string[]) => {
   headersBlocklist = [...headers, ...headersBlocklist]
 }
 
-const usePactWait = (alias: AliasType) => {
+const usePactWait = (alias: AliasType, options?: Partial<WaitOptions>) => {
   const formattedAlias = formatAlias(alias)
   // Cypress versions older than 8.2 do not have a currentTest objects
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
@@ -53,7 +52,7 @@ const usePactWait = (alias: AliasType) => {
       })
     })
   } else {
-    cy.wait(formattedAlias).then((intercept) => {
+    cy.wait(formattedAlias, options).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
       writePact({
         intercept: flattenIntercept,
