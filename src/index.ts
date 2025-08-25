@@ -1,5 +1,6 @@
+import { MatchingRulesType } from './types';
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
-import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
+import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType, InterceptOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
 import { env } from 'process'
 
@@ -7,6 +8,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
+      usePactIntercept: (option: InterceptOptionType, alias: string) => Chainable
       usePactWait: (alias: AliasType) => Chainable
       usePactRequest: (option: AnyObject, alias: string) => Chainable
       usePactGet: (alias: string, pactConfig: PactConfigType) => Chainable
@@ -36,30 +38,47 @@ const setupPactHeaderBlocklist = (headers: string[]) => {
   headersBlocklist = [...headers, ...headersBlocklist]
 }
 
+const interceptDataMap: {[alias: string]: InterceptOptionType} = {}
+const usePactIntercept = (option: InterceptOptionType, alias: string) => {
+  cy.intercept(option.method, option.url, option.response).as(alias)
+
+  interceptDataMap[`@${alias}`] = option
+}
+
 const usePactWait = (alias: AliasType) => {
+
   const formattedAlias = formatAlias(alias)
+  const matchingRules: { matchingRules?: MatchingRulesType } = {};
+  if (interceptDataMap[`@${alias}`]) {
+    matchingRules.matchingRules = interceptDataMap[`@${alias}`]?.matchingRules
+  }
+
   // Cypress versions older than 8.2 do not have a currentTest objects
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
   //NOTE: spread only works for array containing more than one item
   if (formattedAlias.length > 1) {
     cy.wait([...formattedAlias]).spread((...intercepts) => {
       intercepts.forEach((intercept, index) => {
+
         writePact({
           intercept,
           testCaseTitle: `${testCaseTitle}-${formattedAlias[index]}`,
           pactConfig,
-          blocklist: headersBlocklist
+          blocklist: headersBlocklist,
+          ...matchingRules,
         })
       })
     })
   } else {
     cy.wait(formattedAlias).then((intercept) => {
       const flattenIntercept = Array.isArray(intercept) ? intercept[0] : intercept
+
       writePact({
         intercept: flattenIntercept,
         testCaseTitle: `${testCaseTitle}`,
         pactConfig,
-        blocklist: headersBlocklist
+        blocklist: headersBlocklist,
+        ...matchingRules,
       })
     })
   }
@@ -107,6 +126,7 @@ const usePactRequest = (option: Partial<RequestOptionType>, alias: string) => {
 
 Cypress.Commands.add('usePactWait', usePactWait)
 Cypress.Commands.add('usePactRequest', usePactRequest)
+Cypress.Commands.add('usePactIntercept', usePactIntercept)
 Cypress.Commands.add('usePactGet', usePactGet)
 Cypress.Commands.add('setupPact', setupPact)
 Cypress.Commands.add('setupPactHeaderBlocklist', setupPactHeaderBlocklist)
