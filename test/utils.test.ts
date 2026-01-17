@@ -1,9 +1,9 @@
 import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
-import { expect } from '@jest/globals'
 import { XHRRequestAndResponse } from '../src/types'
 const pjson = require('../package.json')
 
 import { promises, Stats } from 'fs'
+import { vi } from 'vitest'
 
 describe('formatAlias', () => {
   it('should format array of string in alias format', () => {
@@ -116,7 +116,7 @@ describe('constructPactFile', () => {
 
 describe('readFile', () => {
   it('should return null when no file is found', async () => {
-    const mock = jest.spyOn(promises, 'stat')
+    const mock = vi.spyOn(promises, 'stat')
     mock.mockReturnValue(
       new Promise((resolve, reject) => {
         reject()
@@ -127,14 +127,14 @@ describe('readFile', () => {
   })
 
   it('should return file content', async () => {
-    const statMock = jest.spyOn(promises, 'stat')
+    const statMock = vi.spyOn(promises, 'stat')
     statMock.mockReturnValue(
       new Promise((resolve) => {
         resolve({} as Stats)
       })
     )
 
-    const readFileMock = jest.spyOn(promises, 'readFile')
+    const readFileMock = vi.spyOn(promises, 'readFile')
     readFileMock.mockReturnValue(
       new Promise((resolve) => {
         resolve('hello')
