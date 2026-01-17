@@ -1,6 +1,6 @@
 import { Interception } from 'cypress/types/net-stubbing'
 import { uniqBy, reverse, omit } from 'lodash'
-import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
+import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType, MatchingRulesType } from 'types'
 const pjson = require('../package.json')
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
@@ -12,15 +12,15 @@ export const formatAlias = (alias: AliasType) => {
 const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
   `cypress/pacts/${providerName}-${consumerName}.json`
 
-export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: PactFileType) => {
+export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist, matchingRules }: PactFileType) => {
   const filePath = constructFilePath(pactConfig)
   cy.task('readFile', filePath)
     .then((content) => {
       if (content) {
         const parsedContent = JSON.parse(content as string)
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent })
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent, matchingRules })
       } else {
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist })
+        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, matchingRules })
       }
     })
     .then((data) => {
@@ -32,13 +32,29 @@ export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: P
 }
 
 export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
-  return omit(headers, [...blocklist])
+  return omit(headers, [...blocklist]);
+}
+
+export const sortHeaders = (headers: HeaderType) => {
+
+  if (!headers) {
+    return headers;
+  }
+
+  return Object.keys(headers).sort().reduce(
+    (obj:Record<string, string | string[]>, key) => {
+      obj[key] = headers[key];
+      return obj;
+    },
+    {}
+  );
 }
 
 const constructInteraction = (
   intercept: Interception | XHRRequestAndResponse,
   testTitle: string,
-  blocklist: string[]
+  blocklist: string[],
+  matchingRules?: MatchingRulesType,
 ): Interaction => {
   const path = new URL(intercept.request.url).pathname
   const search = new URL(intercept.request.url).search
@@ -49,18 +65,19 @@ const constructInteraction = (
     request: {
       method: intercept.request.method,
       path: path,
-      headers: omitHeaders(intercept.request.headers, blocklist),
+      headers: sortHeaders(omitHeaders(intercept.request.headers, blocklist)),
       body: intercept.request.body,
       query: query
     },
     response: {
       status: intercept.response?.statusCode,
-      headers: omitHeaders(intercept.response?.headers, blocklist),
-      body: intercept.response?.body
+      headers: sortHeaders(omitHeaders(intercept.response?.headers, blocklist)),
+      body: intercept.response?.body,
+      matchingRules: matchingRules,
     }
   }
 }
-export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content }: PactFileType) => {
+export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blocklist = [], content, matchingRules }: PactFileType) => {
   const pactSkeletonObject = {
     consumer: { name: pactConfig.consumerName },
     provider: { name: pactConfig.providerName },
@@ -77,19 +94,21 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
   }
 
   if (content) {
-    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
+    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist, matchingRules)]
     const nonDuplicatesInteractions = reverse(uniqBy(reverse(interactions), 'description'))
+
     const data = {
       ...pactSkeletonObject,
       ...content,
       interactions: nonDuplicatesInteractions
     }
+
     return data
   }
 
   return {
     ...pactSkeletonObject,
-    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
+    interactions: [...pactSkeletonObject.interactions, constructInteraction(intercept, testCaseTitle, blocklist, matchingRules)]
   }
 }
 
