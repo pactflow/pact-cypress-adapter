@@ -169,4 +169,4 @@ after(() => {
 ```
 
 ## Example Project
-Check out simple react app example projects at [/example/todo-example](/example/todo-example/). Example contains examples for Cypress 10.x and Cypress 9.x.
+Check out a simple React app example project at [/example/todo-example](/example/todo-example/).
