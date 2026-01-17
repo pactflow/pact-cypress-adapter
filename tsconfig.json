@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "module": "node20",
-    "moduleResolution": "node16",
+    "moduleResolution": "nodenext",
     "noEmitOnError": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
