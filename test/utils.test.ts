@@ -13,6 +13,11 @@ describe('formatAlias', () => {
   it('should format single string to a formatted array', () => {
     expect(formatAlias('a')).toEqual(['@a'])
   })
+
+  it('should not change format if the input is already in alias format', () => {
+    const formattedAlias = "@alias";
+    expect(formatAlias(formattedAlias)).toEqual([formattedAlias])
+  })
 })
 
 describe('constructPactFile', () => {
