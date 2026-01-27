@@ -1,4 +1,3 @@
-import '../../../../dist/index'
 
 describe('example to-do app', () => {
   before(() => {

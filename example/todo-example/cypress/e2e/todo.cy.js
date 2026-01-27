@@ -1,4 +1,3 @@
-import '../../../../dist/index'
 import todosResponse from '../fixtures/todo.json'
 describe('example to-do app', () => {
   before(() => {
