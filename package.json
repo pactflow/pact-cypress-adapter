@@ -25,12 +25,12 @@
   "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "8.53.1",
-    "@vitest/ui": "2.1.9",
+    "@vitest/ui": "4.0.18",
     "cypress": "9.7.0",
     "eslint": "9.39.2",
     "standard-version": "9.5.0",
     "typescript": "5.9.3",
-    "vitest": "2.1.9"
+    "vitest": "4.0.18"
   },
   "dependencies": {
     "@types/node": "^22.0.0",
