@@ -1,6 +1,6 @@
 export const AUTOGEN_HEADER_BLOCKLIST = [
-  'access-control-expose-headers', 
-  'access-control-allow-credentials', 
+  'access-control-expose-headers',
+  'access-control-allow-credentials',
   'host',
   'proxy-connection',
   'sec-ch-ua',

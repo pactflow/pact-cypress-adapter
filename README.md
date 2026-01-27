@@ -32,8 +32,8 @@ module.exports = defineConfig({
       const fs = require('fs')
       pactCypressPlugin(on, config, fs)
       return config
-    },
-  },
+    }
+  }
 })
 ```
 
@@ -139,7 +139,7 @@ Configure your consumer and provider name
 
 ```js
 before(() => {
-    cy.setupPact('ui-consumer', 'api-provider')
+  cy.setupPact('ui-consumer', 'api-provider')
 })
 ```
 
@@ -150,16 +150,15 @@ Listen to aliased `cy.intercept` network call(s), record network request and res
 
 ```js
 before(() => {
-    cy.setupPact('ui-consumer', 'api-provider')
-    cy.intercept('GET', '/users').as('getAllUsers')
+  cy.setupPact('ui-consumer', 'api-provider')
+  cy.intercept('GET', '/users').as('getAllUsers')
 })
 
 //... cypress test
 
 after(() => {
-    cy.usePactWait(['getAllUsers'])
+  cy.usePactWait(['getAllUsers'])
 })
-
 ```
 
 ### cy.setupPactHeaderBlocklist
@@ -192,22 +191,21 @@ Convenience wrapper for `cy.request(options).as(alias)`
 
 ```js
 before(() => {
-    cy.setupPact('ui-consumer', 'api-provider')
-    cy.usePactRequest(
-      {
-        method: 'GET',
-        url: '/users',
-      },
-      'getAllUsers'
-    )
+  cy.setupPact('ui-consumer', 'api-provider')
+  cy.usePactRequest(
+    {
+      method: 'GET',
+      url: '/users'
+    },
+    'getAllUsers'
+  )
 })
 
 //... cypress test
 
 after(() => {
-    cy.usePactGet(['getAllUsers'])
+  cy.usePactGet(['getAllUsers'])
 })
-
 ```
 
 ## Example Project

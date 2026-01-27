@@ -31,11 +31,10 @@ export type Interaction = {
 }
 
 export type XHRRequestAndResponse = {
-  request:
-    | {
-        method: string
-        url: string
-      } & BaseXHR
+  request: {
+    method: string
+    url: string
+  } & BaseXHR
   response: {
     statusCode: string | number | undefined
     statusText: string | undefined
@@ -73,6 +72,6 @@ export type PactFileType = {
   intercept: Interception | XHRRequestAndResponse
   testCaseTitle: string
   pactConfig: PactConfigType
-  blocklist?: string[],
-  content?: any 
+  blocklist?: string[]
+  content?: any
 }
