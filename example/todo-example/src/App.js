@@ -8,8 +8,8 @@ function App() {
         headers: {
           'x-pactflow': 'blah',
           'ignore-me': 'ignore',
-          'ignore-me-globally': 'ignore'
-        }
+          'ignore-me-globally': 'ignore',
+        },
       })
       response = await response.json()
       setTodos(response)

@@ -94,7 +94,7 @@ describe('Todo App', () => {
     // Intercept API calls
     cy.intercept('GET', '**/api/todo', {
       statusCode: 200,
-      body: [{ content: 'clean desk' }]
+      body: [{ content: 'clean desk' }],
     }).as('getTodos')
 
     cy.setupPactHeaderBlocklist(['ignore-me'])
@@ -130,10 +130,13 @@ describe('Todo API Integration', () => {
     cy.setupPact('ui-consumer', 'todo-api')
 
     // Make real HTTP request
-    cy.usePactRequest({
-      method: 'GET',
-      url: 'https://api.example.com/todos'
-    }, 'getTodos')
+    cy.usePactRequest(
+      {
+        method: 'GET',
+        url: 'https://api.example.com/todos',
+      },
+      'getTodos'
+    )
 
     cy.setupPactHeaderBlocklist(['ignore-me'])
   })
@@ -181,9 +184,9 @@ This example showcases modern Cypress best practices:
 
 ```javascript
 module.exports = defineConfig({
-  retries: { runMode: 2, openMode: 0 },  // Auto-retry flaky tests
-  viewportWidth: 1280,                    // Consistent viewport
-  baseUrl: 'http://localhost:3000',       // Centralized URL
+  retries: { runMode: 2, openMode: 0 }, // Auto-retry flaky tests
+  viewportWidth: 1280, // Consistent viewport
+  baseUrl: 'http://localhost:3000', // Centralized URL
   e2e: {
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     setupNodeEvents(on, config) {
@@ -191,8 +194,8 @@ module.exports = defineConfig({
       const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
       pactCypressPlugin(on, config, require('fs'))
       return config
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -329,10 +332,10 @@ Always exclude dynamic or sensitive headers from Pact files:
 
 ```javascript
 cy.setupPactHeaderBlocklist([
-  'authorization',     // Sensitive tokens
-  'x-request-id',     // Dynamic IDs
+  'authorization', // Sensitive tokens
+  'x-request-id', // Dynamic IDs
   'x-correlation-id', // Tracing headers
-  'cookie'            // Session data
+  'cookie', // Session data
 ])
 ```
 
