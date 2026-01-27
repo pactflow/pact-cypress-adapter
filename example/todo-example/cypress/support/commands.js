@@ -1,25 +1,28 @@
 // ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
+// Custom commands for Pact Cypress Adapter
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+/**
+ * Sets up a Pact contract with common configuration for the todo API
+ * This demonstrates how to create reusable commands to reduce duplication in tests
+ *
+ * @param {Object} options - Configuration options
+ * @param {string} options.consumer - Consumer name (default: 'ui-consumer')
+ * @param {string} options.provider - Provider name (default: 'todo-api')
+ * @param {string[]} options.headerBlocklist - Headers to block from Pact files (default: ['ignore-me'])
+ *
+ * @example
+ * cy.setupTodoApiPact()
+ * cy.setupTodoApiPact({ consumer: 'my-app', provider: 'my-api' })
+ */
+Cypress.Commands.add('setupTodoApiPact', (options = {}) => {
+  const {
+    consumer = 'ui-consumer',
+    provider = 'todo-api',
+    headerBlocklist = ['ignore-me'],
+  } = options
+
+  cy.setupPact(consumer, provider)
+  cy.setupPactHeaderBlocklist(headerBlocklist)
+})

@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:cypress/recommended"
+  ],
+  "plugins": ["cypress"],
+  "env": {
+    "cypress/globals": true,
+    "node": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "rules": {
+    "cypress/no-unnecessary-waiting": "warn",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-async-tests": "error",
+    "cypress/no-pause": "warn"
+  }
+}
