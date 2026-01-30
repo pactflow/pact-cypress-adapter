@@ -2,8 +2,8 @@
  * @type {Cypress.PluginConfig}
  */
 
-// eslint-disable-next-line no-unused-vars
-const { readFileAsync } = require('./utils')
+import { readFileAsync } from './utils'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 module.exports = (on: any, config: any, fs: any) => {
   const readFile = (filename: string) => readFileAsync(fs.promises, filename)
   const removePactDir = () => {

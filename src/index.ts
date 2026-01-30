@@ -1,7 +1,6 @@
 import { AUTOGEN_HEADER_BLOCKLIST } from './constants'
 import { AliasType, AnyObject, PactConfigType, XHRRequestAndResponse, RequestOptionType } from 'types'
 import { formatAlias, writePact } from './utils'
-import { env } from 'process'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -73,11 +72,13 @@ const usePactGet = (alias: string) => {
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : ''
 
   formattedAlias.forEach((alias) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.get(alias).then((response: any) => {
+      const requestData = requestDataMap[alias] as RequestOptionType
       const fullRequestAndResponse = {
         request: {
-          method: requestDataMap[alias].method,
-          url: requestDataMap[alias].url,
+          method: requestData.method,
+          url: requestData.url,
           headers: response.requestHeaders,
           body: response.requestBody
         },

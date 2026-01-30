@@ -18,24 +18,36 @@
   "scripts": {
     "test": "vitest run",
     "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "fmt": "prettier --check 'src/**/*.ts' 'test/**/*.ts' '*.config.js'",
+    "fmt:fix": "prettier --write 'src/**/*.ts' 'test/**/*.ts' '*.config.js'",
+    "check": "npm run lint && npm run fmt",
+    "check:fix": "npm run lint:fix && npm run fmt:fix",
     "test:example": "cd example/todo-example && npm i && npm run build && npm run http-server && npm run cypress:run",
     "release": "standard-version"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "8.53.1",
+    "@eslint/js": "^9.17.0",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^24.10.9",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.53.1",
     "@vitest/ui": "4.0.18",
     "cypress": "15.9.0",
     "eslint": "9.39.2",
+    "eslint-plugin-cypress": "^5.2.1",
+    "globals": "^17.3.0",
     "standard-version": "9.5.0",
     "typescript": "5.9.3",
+    "typescript-eslint": "^8.53.1",
     "vitest": "4.0.18"
   },
-  "dependencies": {
-    "@types/node": "^24.0.0",
-    "@types/lodash": "^4.14.178",
-    "lodash": "^4.17.21"
+  "dependencies": {},
+  "peerDependencies": {
+    "cypress": "*"
   },
   "repository": {
     "type": "git",

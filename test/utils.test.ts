@@ -1,6 +1,6 @@
 import { formatAlias, constructPactFile, readFileAsync, omitHeaders } from '../src/utils'
 import { XHRRequestAndResponse } from '../src/types'
-const pjson = require('../package.json')
+import * as pjson from '../package.json'
 
 import { promises, Stats } from 'fs'
 import { vi } from 'vitest'
