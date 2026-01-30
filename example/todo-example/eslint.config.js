@@ -3,7 +3,8 @@ const cypress = require('eslint-plugin-cypress/flat');
 module.exports = [
   {
     files: ['cypress/**/*.js'],
-    ...cypress.configs.recommended,
+    plugins: cypress.configs.recommended.plugins,
+    languageOptions: cypress.configs.recommended.languageOptions,
     rules: {
       ...cypress.configs.recommended.rules,
       'cypress/no-unnecessary-waiting': 'warn',
