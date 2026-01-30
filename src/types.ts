@@ -3,7 +3,7 @@ import { Interception } from 'cypress/types/net-stubbing'
 export type AliasType = string | string[]
 
 export type AnyObject = {
-  [K in string | number]: any
+  [K in string | number]: unknown
 }
 
 export type PactConfigType = {
@@ -15,7 +15,7 @@ export type HeaderType = Record<string, string | string[]> | undefined
 
 type BaseXHR = {
   headers: HeaderType
-  body: any | undefined
+  body: unknown | undefined
 }
 export type Interaction = {
   description: string
@@ -73,5 +73,5 @@ export type PactFileType = {
   testCaseTitle: string
   pactConfig: PactConfigType
   blocklist?: string[]
-  content?: any
+  content?: Record<string, unknown>
 }

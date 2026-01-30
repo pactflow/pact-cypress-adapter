@@ -3,31 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^3.0.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' 'cypress/**/*.js' '*.config.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' 'cypress/**/*.js' '*.config.{js,ts}' --fix",
+    "fmt": "prettier --check 'src/**/*.{js,jsx,ts,tsx}' 'cypress/**/*.js' '*.config.{js,ts}'",
+    "fmt:fix": "prettier --write 'src/**/*.{js,jsx,ts,tsx}' 'cypress/**/*.js' '*.config.{js,ts}'",
+    "check": "npm run lint && npm run fmt",
+    "check:fix": "npm run lint:fix && npm run fmt:fix",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser chrome",
     "cypress:lint": "eslint 'cypress/**/*.js'",
     "cypress:format": "prettier --write 'cypress/**/*.js'",
     "cypress:clean": "rm -rf cypress/pacts cypress/screenshots cypress/videos",
     "http-server": "http-server -p 3000 build/ &"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -42,11 +35,21 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
     "@pactflow/pact-cypress-adapter": "1.3.0",
+    "@types/node": "^24.10.9",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.3",
     "cypress": "15.9.0",
-    "eslint": "8.57.1",
-    "eslint-plugin-cypress": "3.6.0",
+    "eslint": "9.39.2",
+    "eslint-plugin-cypress": "5.2.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.3.0",
     "http-server": "14.1.1",
-    "prettier": "3.8.1"
+    "prettier": "3.8.1",
+    "tsx": "^4.19.2",
+    "vite": "^7.3.1"
   }
 }

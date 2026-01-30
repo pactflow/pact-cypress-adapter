@@ -1,7 +1,40 @@
 import { Interception } from 'cypress/types/net-stubbing'
-import { uniqBy, reverse, omit } from 'lodash'
 import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
-const pjson = require('../package.json')
+import * as pjson from '../package.json'
+
+// Helper to keep only the latest item by property
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const uniqByProperty = <T extends Record<string, any>>(arr: T[], property: keyof T): T[] => {
+  const seen = new Map()
+  // Process from end to keep latest occurrence
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const value = arr[i][property]
+    if (!seen.has(value)) {
+      seen.set(value, true)
+    }
+  }
+  return arr.filter((item) => {
+    const value = item[property]
+    if (seen.has(value)) {
+      seen.delete(value)
+      return true
+    }
+    return false
+  })
+}
+
+// Helper to remove specified keys from object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const omit = <T extends Record<string, any>>(obj: T | undefined, keys: string[]): Partial<T> | undefined => {
+  if (!obj) return undefined
+  const result: Partial<T> = {}
+  for (const [key, value] of Object.entries(obj)) {
+    if (!keys.includes(key)) {
+      result[key as keyof T] = value
+    }
+  }
+  return result
+}
 export const formatAlias = (alias: AliasType) => {
   if (Array.isArray(alias)) {
     return [...alias].map((a) => `@${a}`)
@@ -18,9 +51,20 @@ export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: P
     .then((content) => {
       if (content) {
         const parsedContent = JSON.parse(content as string)
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist, content: parsedContent })
+        return constructPactFile({
+          intercept,
+          testCaseTitle,
+          pactConfig,
+          blocklist,
+          content: parsedContent
+        })
       } else {
-        return constructPactFile({ intercept, testCaseTitle, pactConfig, blocklist })
+        return constructPactFile({
+          intercept,
+          testCaseTitle,
+          pactConfig,
+          blocklist
+        })
       }
     })
     .then((data) => {
@@ -31,8 +75,9 @@ export const writePact = ({ intercept, testCaseTitle, pactConfig, blocklist }: P
     })
 }
 
-export const omitHeaders = (headers: HeaderType, blocklist: string[]) => {
-  return omit(headers, [...blocklist])
+export const omitHeaders = (headers: HeaderType, blocklist: string[]): HeaderType => {
+  const result = omit(headers, blocklist)
+  return (result as HeaderType) ?? undefined
 }
 
 const constructInteraction = (
@@ -77,8 +122,12 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
   }
 
   if (content) {
-    const interactions = [...content.interactions, constructInteraction(intercept, testCaseTitle, blocklist)]
-    const nonDuplicatesInteractions = reverse(uniqBy(reverse(interactions), 'description'))
+    const interactions = [
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(content as any).interactions,
+      constructInteraction(intercept, testCaseTitle, blocklist)
+    ]
+    const nonDuplicatesInteractions = uniqByProperty(interactions, 'description')
     const data = {
       ...pactSkeletonObject,
       ...content,
@@ -93,7 +142,9 @@ export const constructPactFile = ({ intercept, testCaseTitle, pactConfig, blockl
   }
 }
 
-const isFileExisted = async (fs: any, filename: string) => !!(await fs.stat(filename).catch((e: any) => false))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isFileExisted = async (fs: any, filename: string) => !!(await fs.stat(filename).catch(() => false))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const readFileAsync = async (fs: any, filename: string) => {
   if (await isFileExisted(fs, filename)) {
     const data = await fs.readFile(filename, 'utf8')

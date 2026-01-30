@@ -1,6 +1,7 @@
-const { defineConfig } = require('cypress')
+import { defineConfig } from 'cypress'
+import * as fs from 'fs'
 
-module.exports = defineConfig({
+export default defineConfig({
   video: false,
   screenshotOnRunFailure: true,
   viewportWidth: 1280,
@@ -17,9 +18,9 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.js',
-    setupNodeEvents(on, config) {
-      const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
-      const fs = require('fs')
+    async setupNodeEvents(on, config) {
+      const { default: pactCypressPlugin } =
+        await import('@pactflow/pact-cypress-adapter/dist/plugin.js')
       pactCypressPlugin(on, config, fs)
       return config
     },
