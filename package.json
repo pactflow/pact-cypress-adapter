@@ -38,7 +38,7 @@
     "@vitest/ui": "4.0.18",
     "cypress": "15.11.0",
     "eslint": "9.39.4",
-    "eslint-plugin-cypress": "6.1.0",
+    "eslint-plugin-cypress": "6.2.0",
     "globals": "17.4.0",
     "standard-version": "9.5.0",
     "typescript": "5.9.3",
