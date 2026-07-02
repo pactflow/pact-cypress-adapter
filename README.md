@@ -75,13 +75,13 @@ By default, this plugin omits most Cypress auto-generated HTTP headers.
 
 ### Add more headers to blocklist
 
-To exclude other headers in your pact, add them as a list of strings in your `cypress.config.{js,ts}` file under the `env.headersBlocklist` key:
+To exclude other headers in your pact, add them as a list of strings in your `cypress.config.{js,ts}` file under the `expose.headersBlocklist` key:
 
 ```js
 const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
-  env: {
+  expose: {
     headersBlocklist: ['ignore-me-globally']
   },
   e2e: {
@@ -96,7 +96,28 @@ module.exports = defineConfig({
 
 ### Ignore cypress auto-generated header blocklist
 
-To stop Cypress auto-generated HTTP headers from being omitted by the plugin, set `env.ignoreDefaultBlocklist` to `true`:
+To stop Cypress auto-generated HTTP headers from being omitted by the plugin, set `expose.ignoreDefaultBlocklist` to `true`:
+
+```js
+const { defineConfig } = require('cypress')
+
+module.exports = defineConfig({
+  expose: {
+    headersBlocklist: ['ignore-me-globally'],
+    ignoreDefaultBlocklist: true
+  },
+  e2e: {
+    setupNodeEvents(on, config) {
+      // ... plugin setup
+    }
+  }
+})
+```
+
+<details>
+<summary>Legacy Configuration (using env, deprecated in Cypress 15.10.0+)</summary>
+
+If you're using Cypress 15.9.x or earlier, you can use the `env` configuration instead of `expose`:
 
 ```js
 const { defineConfig } = require('cypress')
@@ -114,10 +135,7 @@ module.exports = defineConfig({
 })
 ```
 
-<details>
-<summary>Legacy Configuration (Cypress 9.x and below)</summary>
-
-To exclude headers in your pact with legacy Cypress versions, add them as a list of strings in `cypress.json`:
+For Cypress versions 9.x and below, use `cypress.json`:
 
 ```js
 {
@@ -128,6 +146,8 @@ To exclude headers in your pact with legacy Cypress versions, add them as a list
     }
 }
 ```
+
+**Migration Note:** `Cypress.env()` is deprecated as of Cypress 15.10.0 and will be removed in Cypress 16. Please migrate to `expose` configuration above. The adapter supports both for backward compatibility.
 
 </details>
 

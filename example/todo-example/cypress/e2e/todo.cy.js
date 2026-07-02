@@ -37,7 +37,7 @@ describe('example to-do app - using cy.intercept()', () => {
     ).as('getTodos')
 
     // Configure which headers to exclude from Pact files
-    // 'ignore-me-globally' is also excluded via cypress.config.js env.headersBlocklist
+    // 'ignore-me-globally' is also excluded via cypress.config.ts expose.headersBlocklist
     cy.setupPactHeaderBlocklist(['ignore-me'])
 
     cy.visit('/')

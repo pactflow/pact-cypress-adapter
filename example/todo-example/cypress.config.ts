@@ -10,7 +10,7 @@ export default defineConfig({
     runMode: 2,
     openMode: 0,
   },
-  env: {
+  expose: {
     headersBlocklist: ['ignore-me-globally'],
     ignoreDefaultBlocklist: false,
   },
