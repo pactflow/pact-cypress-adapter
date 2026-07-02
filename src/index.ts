@@ -25,8 +25,8 @@ const setupPact = (consumerName: string, providerName: string) => {
   pactConfig['providerName'] = providerName
 }
 
-const ignoreDefaultBlocklist = Cypress.env('ignoreDefaultBlocklist') || false
-const globalBlocklist = Cypress.env('headersBlocklist') || []
+const ignoreDefaultBlocklist = Cypress.expose('ignoreDefaultBlocklist') ?? Cypress.env('ignoreDefaultBlocklist') ?? false
+const globalBlocklist = Cypress.expose('headersBlocklist') ?? Cypress.env('headersBlocklist') ?? []
 let headersBlocklist: string[] = ignoreDefaultBlocklist
   ? globalBlocklist
   : [...globalBlocklist, ...AUTOGEN_HEADER_BLOCKLIST]
