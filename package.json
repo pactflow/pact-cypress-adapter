@@ -35,7 +35,7 @@
     "@types/node": "24.13.2",
     "@typescript-eslint/eslint-plugin": "8.63.0",
     "@typescript-eslint/parser": "8.63.0",
-    "@vitest/ui": "4.1.9",
+    "@vitest/ui": "4.1.10",
     "cypress": "15.16.0",
     "eslint": "9.39.4",
     "eslint-plugin-cypress": "6.4.2",
@@ -43,7 +43,7 @@
     "standard-version": "9.5.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.63.0",
-    "vitest": "4.1.9"
+    "vitest": "4.1.10"
   },
   "dependencies": {},
   "peerDependencies": {
