@@ -2,6 +2,8 @@ import { Interception } from 'cypress/types/net-stubbing'
 
 export type AliasType = string | string[]
 
+export type PrefixedAliasType = `@${string}`
+
 export type AnyObject = {
   [K in string | number]: unknown
 }

@@ -1,5 +1,13 @@
 import { Interception } from 'cypress/types/net-stubbing'
-import { AliasType, Interaction, PactConfigType, XHRRequestAndResponse, PactFileType, HeaderType } from 'types'
+import {
+  AliasType,
+  Interaction,
+  PactConfigType,
+  PrefixedAliasType,
+  XHRRequestAndResponse,
+  PactFileType,
+  HeaderType
+} from 'types'
 import * as pjson from '../package.json'
 
 // Helper to keep only the latest item by property
@@ -35,9 +43,9 @@ const omit = <T extends Record<string, any>>(obj: T | undefined, keys: string[])
   }
   return result
 }
-export const formatAlias = (alias: AliasType) => {
+export const formatAlias = (alias: AliasType): PrefixedAliasType[] => {
   if (Array.isArray(alias)) {
-    return [...alias].map((a) => `@${a}`)
+    return [...alias].map((a): PrefixedAliasType => `@${a}`)
   }
   return [`@${alias}`]
 }
