@@ -60,8 +60,9 @@
       // fixtures, node: imports for filesystem mocking, and long scenario
       // bodies asserting many related expectations are all normal here. Tests
       // also await inside loops to sequence fixture setup, use magic numbers
-      // in assertions, span multiple files to organize related suites, and
-      // print progress to console. Cypress's `afterEach`/`beforeEach` hooks
+      // in assertions, legitimately grow long because splitting a cohesive
+      // suite hurts readability more than length does, and print progress to
+      // console. Cypress's `afterEach`/`beforeEach` hooks
       // are also a normal place to assert on recorded interceptions, but
       // Biome's noMisplacedAssertion rule only recognizes `it()`/`test()`
       // bodies as valid assertion containers.
