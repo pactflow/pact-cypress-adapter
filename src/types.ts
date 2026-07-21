@@ -1,79 +1,79 @@
-import { Interception } from 'cypress/types/net-stubbing'
+import { Interception } from "cypress/types/net-stubbing";
 
-export type AliasType = string | string[]
+export type AliasType = string | string[];
 
-export type PrefixedAliasType = `@${string}`
+export type PrefixedAliasType = `@${string}`;
 
 export type AnyObject = {
-  [K in string | number]: unknown
-}
+  [K in string | number]: unknown;
+};
 
 export type PactConfigType = {
-  consumerName: string
-  providerName: string
-}
+  consumerName: string;
+  providerName: string;
+};
 
-export type HeaderType = Record<string, string | string[]> | undefined
+export type HeaderType = Record<string, string | string[]> | undefined;
 
 type BaseXHR = {
-  headers: HeaderType
-  body: unknown | undefined
-}
+  headers: HeaderType;
+  body: unknown | undefined;
+};
 export type Interaction = {
-  description: string
-  providerState: string
+  description: string;
+  providerState: string;
   request: {
-    method: string
-    path: string
-    query: string
-  } & BaseXHR
+    method: string;
+    path: string;
+    query: string;
+  } & BaseXHR;
   response: {
-    status: string | number | undefined
-  } & BaseXHR
-}
+    status: string | number | undefined;
+  } & BaseXHR;
+};
 
 export type XHRRequestAndResponse = {
   request: {
-    method: string
-    url: string
-  } & BaseXHR
+    method: string;
+    url: string;
+  } & BaseXHR;
   response: {
-    statusCode: string | number | undefined
-    statusText: string | undefined
-  } & BaseXHR
-}
+    statusCode: string | number | undefined;
+    statusText: string | undefined;
+  } & BaseXHR;
+};
 
 type Encodings =
-  | 'ascii'
-  | 'base64'
-  | 'binary'
-  | 'hex'
-  | 'latin1'
-  | 'utf8'
-  | 'utf-8'
-  | 'ucs2'
-  | 'ucs-2'
-  | 'utf16le'
-  | 'utf-16le'
-  | null
+  | "ascii"
+  | "base64"
+  | "binary"
+  | "hex"
+  | "latin1"
+  | "utf8"
+  | "utf-8"
+  | "ucs2"
+  | "ucs-2"
+  | "utf16le"
+  | "utf-16le"
+  | null;
 
 export type RequestOptionType = {
-  auth: object
-  body: AnyObject
-  encoding: Encodings
-  followRedirect: boolean
-  form: boolean
-  gzip: boolean
-  headers: object
-  method: string
-  qs: object
-  url: string
-}
+  auth: object;
+  body: AnyObject;
+  encoding: Encodings;
+  followRedirect: boolean;
+  form: boolean;
+  gzip: boolean;
+  headers: object;
+  method: string;
+  qs: object;
+  url: string;
+};
 
 export type PactFileType = {
-  intercept: Interception | XHRRequestAndResponse
-  testCaseTitle: string
-  pactConfig: PactConfigType
-  blocklist?: string[]
-  content?: Record<string, unknown>
-}
+  intercept: Interception | XHRRequestAndResponse;
+  testCaseTitle: string;
+  pactConfig: PactConfigType;
+  blocklist?: string[];
+  content?: Record<string, unknown>;
+};
