@@ -4,11 +4,19 @@
   "formatter": { "useEditorconfig": true },
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "javascript": {
-    // `cy` is Cypress's ambient global command chain, and `describe`/`it`/
-    // `expect` come from vitest's `globals: true` test mode (vitest.config.ts).
-    // Both are supplied to TypeScript via tsconfig.json's ambient `types`
-    // array, which Biome's linter cannot see.
-    "globals": ["cy", "describe", "it", "expect"]
+    // `cy`, `Cypress`, `beforeEach`, and `afterEach` are Cypress's ambient
+    // globals, and `describe`/`it`/`expect` come from vitest's `globals: true`
+    // test mode (vitest.config.ts). All are supplied to TypeScript via
+    // tsconfig.json's ambient `types` array, which Biome's linter cannot see.
+    "globals": [
+      "cy",
+      "Cypress",
+      "beforeEach",
+      "afterEach",
+      "describe",
+      "it",
+      "expect"
+    ]
   },
   "linter": {
     "rules": {
@@ -53,7 +61,10 @@
       // bodies asserting many related expectations are all normal here. Tests
       // also await inside loops to sequence fixture setup, use magic numbers
       // in assertions, span multiple files to organize related suites, and
-      // print progress to console.
+      // print progress to console. Cypress's `afterEach`/`beforeEach` hooks
+      // are also a normal place to assert on recorded interceptions, but
+      // Biome's noMisplacedAssertion rule only recognizes `it()`/`test()`
+      // bodies as valid assertion containers.
       "includes": ["test/**", "example/**/cypress/**"],
       "linter": {
         "rules": {
@@ -65,7 +76,7 @@
             "noNonNullAssertion": "off",
             "noExcessiveLinesPerFile": "off"
           },
-          "suspicious": { "noConsole": "off" }
+          "suspicious": { "noConsole": "off", "noMisplacedAssertion": "off" }
         }
       }
     },
