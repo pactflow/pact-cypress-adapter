@@ -1,24 +1,27 @@
-import { Interception } from "cypress/types/net-stubbing";
-import {
+import type { Interception } from "cypress/types/net-stubbing";
+import pjson from "../package.json";
+import type {
   AliasType,
+  HeaderType,
   Interaction,
   PactConfigType,
+  PactFileType,
   PrefixedAliasType,
   XHRRequestAndResponse,
-  PactFileType,
-  HeaderType,
-} from "types";
-import * as pjson from "../package.json";
+} from "./types";
+
+const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
+  `cypress/pacts/${providerName}-${consumerName}.json`;
 
 // Helper to keep only the latest item by property
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: generic helper accepts records of arbitrary value type
 const uniqByProperty = <T extends Record<string, any>>(
   arr: T[],
   property: keyof T,
 ): T[] => {
   const seen = new Map();
   // Process from end to keep latest occurrence
-  for (let i = arr.length - 1; i >= 0; i--) {
+  for (let i = arr.length - 1; i >= 0; i -= 1) {
     const value = arr[i][property];
     if (!seen.has(value)) {
       seen.set(value, true);
@@ -35,12 +38,14 @@ const uniqByProperty = <T extends Record<string, any>>(
 };
 
 // Helper to remove specified keys from object
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: generic helper accepts records of arbitrary value type
 const omit = <T extends Record<string, any>>(
   obj: T | undefined,
   keys: string[],
 ): Partial<T> | undefined => {
-  if (!obj) return undefined;
+  if (!obj) {
+    return;
+  }
   const result: Partial<T> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (!keys.includes(key)) {
@@ -49,15 +54,43 @@ const omit = <T extends Record<string, any>>(
   }
   return result;
 };
+
+const constructInteraction = (
+  intercept: Interception | XHRRequestAndResponse,
+  testTitle: string,
+  blocklist: string[],
+): Interaction => {
+  const path = new URL(intercept.request.url).pathname;
+  const { search } = new URL(intercept.request.url);
+  const query = new URLSearchParams(search).toString();
+  return {
+    description: testTitle,
+    providerState: "",
+    request: {
+      method: intercept.request.method,
+      path,
+      headers: omitHeaders(intercept.request.headers, blocklist),
+      body: intercept.request.body,
+      query,
+    },
+    response: {
+      status: intercept.response?.statusCode,
+      headers: omitHeaders(intercept.response?.headers, blocklist),
+      body: intercept.response?.body,
+    },
+  };
+};
+
+// biome-ignore lint/suspicious/noExplicitAny: fs is injected by the Cypress plugin host and is untyped
+const isFileExisted = async (fs: any, filename: string) =>
+  Boolean(await fs.stat(filename).catch(() => false));
+
 export const formatAlias = (alias: AliasType): PrefixedAliasType[] => {
   if (Array.isArray(alias)) {
     return [...alias].map((a): PrefixedAliasType => `@${a}`);
   }
   return [`@${alias}`];
 };
-
-const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
-  `cypress/pacts/${providerName}-${consumerName}.json`;
 
 export const writePact = ({
   intercept,
@@ -77,21 +110,18 @@ export const writePact = ({
           blocklist,
           content: parsedContent,
         });
-      } else {
-        return constructPactFile({
-          intercept,
-          testCaseTitle,
-          pactConfig,
-          blocklist,
-        });
       }
+      return constructPactFile({
+        intercept,
+        testCaseTitle,
+        pactConfig,
+        blocklist,
+      });
     })
     .then((data) => {
       cy.writeFile(filePath, JSON.stringify(data));
     })
-    .then(() => {
-      return intercept;
-    });
+    .then(() => intercept);
 };
 
 export const omitHeaders = (
@@ -102,31 +132,6 @@ export const omitHeaders = (
   return (result as HeaderType) ?? undefined;
 };
 
-const constructInteraction = (
-  intercept: Interception | XHRRequestAndResponse,
-  testTitle: string,
-  blocklist: string[],
-): Interaction => {
-  const path = new URL(intercept.request.url).pathname;
-  const search = new URL(intercept.request.url).search;
-  const query = new URLSearchParams(search).toString();
-  return {
-    description: testTitle,
-    providerState: "",
-    request: {
-      method: intercept.request.method,
-      path: path,
-      headers: omitHeaders(intercept.request.headers, blocklist),
-      body: intercept.request.body,
-      query: query,
-    },
-    response: {
-      status: intercept.response?.statusCode,
-      headers: omitHeaders(intercept.response?.headers, blocklist),
-      body: intercept.response?.body,
-    },
-  };
-};
 export const constructPactFile = ({
   intercept,
   testCaseTitle,
@@ -151,7 +156,7 @@ export const constructPactFile = ({
 
   if (content) {
     const interactions = [
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: content is parsed JSON of unknown shape from a prior pact file write
       ...(content as any).interactions,
       constructInteraction(intercept, testCaseTitle, blocklist),
     ];
@@ -176,10 +181,7 @@ export const constructPactFile = ({
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isFileExisted = async (fs: any, filename: string) =>
-  !!(await fs.stat(filename).catch(() => false));
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: fs is injected by the Cypress plugin host and is untyped
 export const readFileAsync = async (fs: any, filename: string) => {
   if (await isFileExisted(fs, filename)) {
     const data = await fs.readFile(filename, "utf8");

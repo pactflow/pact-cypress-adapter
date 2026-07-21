@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+// biome-ignore-all lint/suspicious/noExplicitAny: test doubles are deliberately loosely typed
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 interface MockCypress {
   expose: (key: string) => unknown;
@@ -10,13 +12,13 @@ describe("Configuration Loading", () => {
 
   beforeEach(() => {
     // Store original Cypress
-    originalCypress = global.Cypress as typeof Cypress;
+    originalCypress = globalThis.Cypress as typeof Cypress;
   });
 
   afterEach(() => {
     // Restore original Cypress
     if (originalCypress) {
-      global.Cypress = originalCypress;
+      globalThis.Cypress = originalCypress;
     }
   });
 
@@ -24,18 +26,15 @@ describe("Configuration Loading", () => {
     // Setup mock Cypress object
     const mockCypress: MockCypress = {
       expose: vi.fn((key: string) => {
-        if (key === "headersBlocklist") return ["exposed-header"];
-        return undefined;
+        if (key === "headersBlocklist") {
+          return ["exposed-header"];
+        }
       }),
-      env: vi.fn(() => {
-        return undefined;
-      }),
+      env: vi.fn(() => {}),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     // Simulate the config loading logic
     const globalBlocklist =
@@ -50,20 +49,16 @@ describe("Configuration Loading", () => {
 
   it("should fallback to Cypress.env() when Cypress.expose() is undefined for headersBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {
-        // Cypress.expose() not set
-        return undefined;
-      }),
+      expose: vi.fn(() => {}),
       env: vi.fn((key: string) => {
-        if (key === "headersBlocklist") return ["env-header"];
-        return undefined;
+        if (key === "headersBlocklist") {
+          return ["env-header"];
+        }
       }),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     const globalBlocklist =
       cypress.expose("headersBlocklist") ??
@@ -76,18 +71,12 @@ describe("Configuration Loading", () => {
 
   it("should use default value when both Cypress.expose() and Cypress.env() are undefined", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {
-        return undefined;
-      }),
-      env: vi.fn(() => {
-        return undefined;
-      }),
+      expose: vi.fn(() => {}),
+      env: vi.fn(() => {}),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     const globalBlocklist =
       cypress.expose("headersBlocklist") ??
@@ -101,18 +90,15 @@ describe("Configuration Loading", () => {
   it("should prefer Cypress.expose() over Cypress.env() for ignoreDefaultBlocklist", () => {
     const mockCypress: MockCypress = {
       expose: vi.fn((key: string) => {
-        if (key === "ignoreDefaultBlocklist") return true;
-        return undefined;
+        if (key === "ignoreDefaultBlocklist") {
+          return true;
+        }
       }),
-      env: vi.fn(() => {
-        return undefined;
-      }),
+      env: vi.fn(() => {}),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     const ignoreDefaultBlocklist =
       cypress.expose("ignoreDefaultBlocklist") ??
@@ -126,19 +112,16 @@ describe("Configuration Loading", () => {
 
   it("should fallback to Cypress.env() when Cypress.expose() is undefined for ignoreDefaultBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {
-        return undefined;
-      }),
+      expose: vi.fn(() => {}),
       env: vi.fn((key: string) => {
-        if (key === "ignoreDefaultBlocklist") return true;
-        return undefined;
+        if (key === "ignoreDefaultBlocklist") {
+          return true;
+        }
       }),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     const ignoreDefaultBlocklist =
       cypress.expose("ignoreDefaultBlocklist") ??
@@ -151,18 +134,12 @@ describe("Configuration Loading", () => {
 
   it("should use default value when both Cypress.expose() and Cypress.env() are undefined for ignoreDefaultBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {
-        return undefined;
-      }),
-      env: vi.fn(() => {
-        return undefined;
-      }),
+      expose: vi.fn(() => {}),
+      env: vi.fn(() => {}),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.Cypress = mockCypress as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cypress = global.Cypress as any;
+    globalThis.Cypress = mockCypress as any;
+    const cypress = globalThis.Cypress as any;
 
     const ignoreDefaultBlocklist =
       cypress.expose("ignoreDefaultBlocklist") ??

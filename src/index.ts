@@ -1,15 +1,17 @@
+// biome-ignore-all lint/style/noTernary: short conditional value/fallback selection reads more clearly here than an if-else block; no logic to simplify by converting
+
 import { AUTOGEN_HEADER_BLOCKLIST } from "./constants";
-import {
+import type {
   AliasType,
   AnyObject,
   PactConfigType,
-  XHRRequestAndResponse,
   RequestOptionType,
-} from "types";
+  XHRRequestAndResponse,
+} from "./types";
 import { formatAlias, writePact } from "./utils";
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // biome-ignore lint/style/noNamespace: augmenting Cypress.Chainable requires namespace syntax
   namespace Cypress {
     interface Chainable {
       usePactWait: (alias: AliasType) => Chainable;
@@ -30,8 +32,8 @@ const pactConfig: PactConfigType = {
 };
 
 const setupPact = (consumerName: string, providerName: string) => {
-  pactConfig["consumerName"] = consumerName;
-  pactConfig["providerName"] = providerName;
+  pactConfig.consumerName = consumerName;
+  pactConfig.providerName = providerName;
 };
 
 const ignoreDefaultBlocklist =
@@ -86,10 +88,12 @@ const usePactGet = (alias: string) => {
   // Cypress versions older than 8.2 do not have a currentTest objects
   const testCaseTitle = Cypress.currentTest ? Cypress.currentTest.title : "";
 
-  formattedAlias.forEach((alias) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cy.get(alias).then((response: any) => {
-      const requestData = requestDataMap[alias] as RequestOptionType;
+  for (const formattedAliasItem of formattedAlias) {
+    // biome-ignore lint/suspicious/noExplicitAny: Cypress subject type for cy.get().then() is not narrowed by this plugin
+    cy.get(formattedAliasItem).then((response: any) => {
+      const requestData = requestDataMap[
+        formattedAliasItem
+      ] as RequestOptionType;
       const fullRequestAndResponse = {
         request: {
           method: requestData.method,
@@ -106,12 +110,12 @@ const usePactGet = (alias: string) => {
       } as XHRRequestAndResponse;
       writePact({
         intercept: fullRequestAndResponse,
-        testCaseTitle: `${testCaseTitle}-${alias}`,
+        testCaseTitle: `${testCaseTitle}-${formattedAliasItem}`,
         pactConfig,
         blocklist: headersBlocklist,
       });
     });
-  });
+  }
 };
 
 const usePactRequest = (option: Partial<RequestOptionType>, alias: string) => {
