@@ -234,10 +234,10 @@ cy.setupTodoApiPact(|)  // options?: { consumer?, provider?, headerBlocklist? }
 
 ```bash
 # Lint Cypress tests
-npm run cypress:lint
+npm run lint
 
 # Format code
-npm run cypress:format
+npm run fmt:fix
 
 # Clean artifacts
 npm run cypress:clean
@@ -261,10 +261,10 @@ example/todo-example/
 │   ├── pacts/                       # Generated Pact files (after tests run)
 │   └── tsconfig.json                # TypeScript config
 ├── src/                              # React app
-│   └── App.js                       # Simple todo list component
+│   └── App.jsx                      # Simple todo list component
 ├── cypress.config.js                # Cypress configuration
-├── .prettierrc                      # Code formatting rules
-├── .eslintrc.json                   # Linting rules
+├── eslint.config.js                 # ESLint rules for cypress/**/*.js
+├── biome.jsonc (repo root)          # Code formatting and linting rules
 ├── package.json
 └── README.md                        # This file
 ```
@@ -283,8 +283,8 @@ npm run build      # Build React app for production
 ```bash
 npm run cypress:open     # Open Cypress Test Runner (interactive)
 npm run cypress:run      # Run tests headlessly (CI mode)
-npm run cypress:lint     # Lint Cypress test files
-npm run cypress:format   # Format Cypress test files
+npm run lint             # Lint the app and Cypress test files
+npm run fmt:fix          # Format all files
 npm run cypress:clean    # Remove generated artifacts
 ```
 
