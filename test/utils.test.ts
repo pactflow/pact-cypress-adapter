@@ -1,14 +1,13 @@
-import {
-  formatAlias,
-  constructPactFile,
-  readFileAsync,
-  omitHeaders,
-} from "../src/utils";
-import { XHRRequestAndResponse } from "../src/types";
-import * as pjson from "../package.json";
-
-import { promises, Stats } from "fs";
+import { promises, type Stats } from "node:fs";
 import { vi } from "vitest";
+import pjson from "../package.json";
+import type { XHRRequestAndResponse } from "../src/types";
+import {
+  constructPactFile,
+  formatAlias,
+  omitHeaders,
+  readFileAsync,
+} from "../src/utils";
 
 describe("formatAlias", () => {
   it("should format array of string in alias format", () => {
@@ -123,7 +122,7 @@ describe("readFile", () => {
   it("should return null when no file is found", async () => {
     const mock = vi.spyOn(promises, "stat");
     mock.mockReturnValue(
-      new Promise((resolve, reject) => {
+      new Promise((_resolve, reject) => {
         reject();
       }),
     );

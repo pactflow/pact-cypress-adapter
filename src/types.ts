@@ -1,4 +1,25 @@
-import { Interception } from "cypress/types/net-stubbing";
+// biome-ignore-all lint/style/useConsistentTypeDefinitions: these are all plain object shapes declared with `type`; switching to `interface` would only change the published .d.ts syntax, not any signature
+
+import type { Interception } from "cypress/types/net-stubbing";
+
+type BaseXhr = {
+  headers: HeaderType;
+  body: unknown | undefined;
+};
+
+type Encodings =
+  | "ascii"
+  | "base64"
+  | "binary"
+  | "hex"
+  | "latin1"
+  | "utf8"
+  | "utf-8"
+  | "ucs2"
+  | "ucs-2"
+  | "utf16le"
+  | "utf-16le"
+  | null;
 
 export type AliasType = string | string[];
 
@@ -15,10 +36,6 @@ export type PactConfigType = {
 
 export type HeaderType = Record<string, string | string[]> | undefined;
 
-type BaseXHR = {
-  headers: HeaderType;
-  body: unknown | undefined;
-};
 export type Interaction = {
   description: string;
   providerState: string;
@@ -26,36 +43,23 @@ export type Interaction = {
     method: string;
     path: string;
     query: string;
-  } & BaseXHR;
+  } & BaseXhr;
   response: {
     status: string | number | undefined;
-  } & BaseXHR;
+  } & BaseXhr;
 };
 
+// biome-ignore lint/style/useNamingConvention: XHRRequestAndResponse is part of the published public API; renaming to satisfy strictCase would be a breaking change
 export type XHRRequestAndResponse = {
   request: {
     method: string;
     url: string;
-  } & BaseXHR;
+  } & BaseXhr;
   response: {
     statusCode: string | number | undefined;
     statusText: string | undefined;
-  } & BaseXHR;
+  } & BaseXhr;
 };
-
-type Encodings =
-  | "ascii"
-  | "base64"
-  | "binary"
-  | "hex"
-  | "latin1"
-  | "utf8"
-  | "utf-8"
-  | "ucs2"
-  | "ucs-2"
-  | "utf16le"
-  | "utf-16le"
-  | null;
 
 export type RequestOptionType = {
   auth: object;
