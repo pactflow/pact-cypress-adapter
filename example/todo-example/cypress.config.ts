@@ -1,6 +1,5 @@
 import fs from "node:fs";
 
-// biome-ignore lint/correctness/noUnresolvedImports: defineConfig is exported by cypress at runtime; Biome's resolver misreads the package's conditional exports map across the nested example node_modules.
 import { defineConfig } from "cypress";
 
 export default defineConfig({
