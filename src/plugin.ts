@@ -3,8 +3,10 @@
  */
 
 import { readFileAsync } from "./utils";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-module.exports = (on: any, config: any, fs: any) => {
+
+// biome-ignore lint/style/noCommonJs: Cypress loads plugin files through require() at runtime
+// biome-ignore lint/suspicious/noExplicitAny: on/config/fs are Cypress plugin host arguments and are untyped
+module.exports = (on: any, _config: any, fs: any) => {
   const readFile = (filename: string) => readFileAsync(fs.promises, filename);
   const removePactDir = () => {
     fs.promises

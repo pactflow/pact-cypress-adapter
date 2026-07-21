@@ -3,9 +3,29 @@
   "assist": { "actions": { "recommended": true } },
   "formatter": { "useEditorconfig": true },
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "javascript": {
+    // `cy` is Cypress's ambient global command chain, and `describe`/`it`/
+    // `expect` come from vitest's `globals: true` test mode (vitest.config.ts).
+    // Both are supplied to TypeScript via tsconfig.json's ambient `types`
+    // array, which Biome's linter cannot see.
+    "globals": ["cy", "describe", "it", "expect"]
+  },
   "linter": {
     "rules": {
-      "preset": "all"
+      "preset": "all",
+      "correctness": {
+        // This project targets CommonJS output ("module": "node20" without
+        // "type": "module" in package.json) and tsconfig.json does not set
+        // allowImportingTsExtensions, so relative imports cannot carry a
+        // ".ts"/".js" extension and JSON imports cannot carry an import
+        // attribute the way ESM/nodenext resolution expects.
+        "useImportExtensions": "off",
+        "useJsonImportAttributes": "off",
+        // useQwikValidLexicalScope checks that closures are serializable for
+        // Qwik's resumability model. This project has no dependency on Qwik
+        // and does not use its closure-serialization runtime.
+        "useQwikValidLexicalScope": "off"
+      }
     }
   },
   "overrides": [
@@ -32,8 +52,9 @@
       // fixtures, node: imports for filesystem mocking, and long scenario
       // bodies asserting many related expectations are all normal here. Tests
       // also await inside loops to sequence fixture setup, use magic numbers
-      // in assertions, span multiple files to organize related suites, and
-      // print progress to console.
+      // in assertions, span multiple files to organize related suites, print
+      // progress to console, and stub collaborators with empty mock function
+      // bodies (e.g. `vi.fn(() => {})`) where the return value is irrelevant.
       "includes": ["test/**", "example/**/cypress/**"],
       "linter": {
         "rules": {
@@ -45,7 +66,7 @@
             "noNonNullAssertion": "off",
             "noExcessiveLinesPerFile": "off"
           },
-          "suspicious": { "noConsole": "off" }
+          "suspicious": { "noConsole": "off", "noEmptyBlockStatements": "off" }
         }
       }
     },
