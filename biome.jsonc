@@ -1,0 +1,107 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "assist": { "actions": { "recommended": true } },
+  "formatter": { "useEditorconfig": true },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "javascript": {
+    // `cy`, `Cypress`, `beforeEach`, and `afterEach` are Cypress's ambient
+    // globals, and `describe`/`it`/`expect` come from vitest's `globals: true`
+    // test mode (vitest.config.ts). All are supplied to TypeScript via
+    // tsconfig.json's ambient `types` array, which Biome's linter cannot see.
+    "globals": [
+      "cy",
+      "Cypress",
+      "beforeEach",
+      "afterEach",
+      "describe",
+      "it",
+      "expect"
+    ]
+  },
+  "linter": {
+    "rules": {
+      "preset": "all",
+      "correctness": {
+        // This project targets CommonJS output ("module": "node20" without
+        // "type": "module" in package.json) and tsconfig.json does not set
+        // allowImportingTsExtensions, so relative imports cannot carry a
+        // ".ts"/".js" extension and JSON imports cannot carry an import
+        // attribute the way ESM/nodenext resolution expects.
+        "useImportExtensions": "off",
+        "useJsonImportAttributes": "off",
+        // useQwikValidLexicalScope checks that closures are serializable for
+        // Qwik's resumability model. This project has no dependency on Qwik
+        // and does not use its closure-serialization runtime.
+        "useQwikValidLexicalScope": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // Vite, Vitest, and Cypress all require a default export from their
+      // config files, and those files legitimately reach for node built-ins.
+      // Config files also hardcode magic numbers (ports, timeouts) and read
+      // process.env for environment-specific configuration.
+      "includes": ["**/*.config.ts", "**/*.config.js", "**/*.config.mjs"],
+      "linter": {
+        "rules": {
+          "complexity": { "noRedundantDefaultExport": "off" },
+          "correctness": { "noNodejsModules": "off" },
+          "style": {
+            "noDefaultExport": "off",
+            "noMagicNumbers": "off",
+            "noProcessEnv": "off"
+          }
+        }
+      }
+    },
+    {
+      // Test idioms: literal expected values, non-null assertions on known
+      // fixtures, node: imports for filesystem mocking, and long scenario
+      // bodies asserting many related expectations are all normal here. Tests
+      // also await inside loops to sequence fixture setup, use magic numbers
+      // in assertions, legitimately grow long because splitting a cohesive
+      // suite hurts readability more than length does, and print progress to
+      // console. Cypress's `afterEach`/`beforeEach` hooks are also a normal
+      // place to assert on recorded interceptions, but Biome's
+      // noMisplacedAssertion rule only recognizes `it()`/`test()` bodies as
+      // valid assertion containers.
+      "includes": ["test/**", "example/**/cypress/**"],
+      "linter": {
+        "rules": {
+          "complexity": { "noExcessiveLinesPerFunction": "off" },
+          "correctness": { "noNodejsModules": "off" },
+          "performance": { "noAwaitInLoops": "off" },
+          "style": {
+            "noMagicNumbers": "off",
+            "noNonNullAssertion": "off",
+            "noExcessiveLinesPerFile": "off"
+          },
+          "suspicious": { "noConsole": "off", "noMisplacedAssertion": "off" }
+        }
+      }
+    },
+    {
+      // The Cypress plugin's console output is user-facing progress
+      // reporting, not debug residue.
+      "includes": ["src/plugin.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    },
+    {
+      // The example is a separate npm project whose dependencies are installed
+      // on demand by `npm run test:example`, so nothing here resolves during a
+      // root `biome check` on a fresh checkout. The example's imports are
+      // verified by its own build and Cypress run instead.
+      "includes": ["example/todo-example/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noUnresolvedImports": "off" }
+        }
+      }
+    }
+  ]
+}
