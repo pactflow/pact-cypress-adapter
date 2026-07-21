@@ -12,6 +12,8 @@
     {
       // Vite, Vitest, and Cypress all require a default export from their
       // config files, and those files legitimately reach for node built-ins.
+      // Config files also hardcode magic numbers (ports, timeouts) and read
+      // process.env for environment-specific configuration.
       "includes": ["**/*.config.ts", "**/*.config.js", "**/*.config.mjs"],
       "linter": {
         "rules": {
@@ -28,7 +30,10 @@
     {
       // Test idioms: literal expected values, non-null assertions on known
       // fixtures, node: imports for filesystem mocking, and long scenario
-      // bodies asserting many related expectations are all normal here.
+      // bodies asserting many related expectations are all normal here. Tests
+      // also await inside loops to sequence fixture setup, use magic numbers
+      // in assertions, span multiple files to organize related suites, and
+      // print progress to console.
       "includes": ["test/**", "example/**/cypress/**"],
       "linter": {
         "rules": {
