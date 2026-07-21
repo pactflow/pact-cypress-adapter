@@ -16,13 +16,14 @@
  * cy.setupTodoApiPact()
  * cy.setupTodoApiPact({ consumer: 'my-app', provider: 'my-api' })
  */
-Cypress.Commands.add('setupTodoApiPact', (options = {}) => {
+// biome-ignore lint/security/noSecrets: "setupTodoApiPact" is a custom command name, not a credential; it just has enough entropy to trip the heuristic.
+Cypress.Commands.add("setupTodoApiPact", (options = {}) => {
   const {
-    consumer = 'ui-consumer',
-    provider = 'todo-api',
-    headerBlocklist = ['ignore-me'],
-  } = options
+    consumer = "ui-consumer",
+    provider = "todo-api",
+    headerBlocklist = ["ignore-me"],
+  } = options;
 
-  cy.setupPact(consumer, provider)
-  cy.setupPactHeaderBlocklist(headerBlocklist)
-})
+  cy.setupPact(consumer, provider);
+  cy.setupPactHeaderBlocklist(headerBlocklist);
+});
