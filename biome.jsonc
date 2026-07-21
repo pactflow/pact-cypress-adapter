@@ -1,0 +1,58 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "assist": { "actions": { "recommended": true } },
+  "formatter": { "useEditorconfig": true },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "linter": {
+    "rules": {
+      "preset": "all"
+    }
+  },
+  "overrides": [
+    {
+      // Vite, Vitest, and Cypress all require a default export from their
+      // config files, and those files legitimately reach for node built-ins.
+      "includes": ["**/*.config.ts", "**/*.config.js", "**/*.config.mjs"],
+      "linter": {
+        "rules": {
+          "complexity": { "noRedundantDefaultExport": "off" },
+          "correctness": { "noNodejsModules": "off" },
+          "style": {
+            "noDefaultExport": "off",
+            "noMagicNumbers": "off",
+            "noProcessEnv": "off"
+          }
+        }
+      }
+    },
+    {
+      // Test idioms: literal expected values, non-null assertions on known
+      // fixtures, node: imports for filesystem mocking, and long scenario
+      // bodies asserting many related expectations are all normal here.
+      "includes": ["test/**", "example/**/cypress/**"],
+      "linter": {
+        "rules": {
+          "complexity": { "noExcessiveLinesPerFunction": "off" },
+          "correctness": { "noNodejsModules": "off" },
+          "performance": { "noAwaitInLoops": "off" },
+          "style": {
+            "noMagicNumbers": "off",
+            "noNonNullAssertion": "off",
+            "noExcessiveLinesPerFile": "off"
+          },
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    },
+    {
+      // The Cypress plugin's console output is user-facing progress
+      // reporting, not debug residue.
+      "includes": ["src/plugin.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    }
+  ]
+}
