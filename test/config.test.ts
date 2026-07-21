@@ -30,7 +30,7 @@ describe("Configuration Loading", () => {
           return ["exposed-header"];
         }
       }),
-      env: vi.fn(() => {}),
+      env: vi.fn(),
     };
 
     globalThis.Cypress = mockCypress as any;
@@ -49,7 +49,7 @@ describe("Configuration Loading", () => {
 
   it("should fallback to Cypress.env() when Cypress.expose() is undefined for headersBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {}),
+      expose: vi.fn(),
       env: vi.fn((key: string) => {
         if (key === "headersBlocklist") {
           return ["env-header"];
@@ -71,8 +71,8 @@ describe("Configuration Loading", () => {
 
   it("should use default value when both Cypress.expose() and Cypress.env() are undefined", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {}),
-      env: vi.fn(() => {}),
+      expose: vi.fn(),
+      env: vi.fn(),
     };
 
     globalThis.Cypress = mockCypress as any;
@@ -94,7 +94,7 @@ describe("Configuration Loading", () => {
           return true;
         }
       }),
-      env: vi.fn(() => {}),
+      env: vi.fn(),
     };
 
     globalThis.Cypress = mockCypress as any;
@@ -112,7 +112,7 @@ describe("Configuration Loading", () => {
 
   it("should fallback to Cypress.env() when Cypress.expose() is undefined for ignoreDefaultBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {}),
+      expose: vi.fn(),
       env: vi.fn((key: string) => {
         if (key === "ignoreDefaultBlocklist") {
           return true;
@@ -134,8 +134,8 @@ describe("Configuration Loading", () => {
 
   it("should use default value when both Cypress.expose() and Cypress.env() are undefined for ignoreDefaultBlocklist", () => {
     const mockCypress: MockCypress = {
-      expose: vi.fn(() => {}),
-      env: vi.fn(() => {}),
+      expose: vi.fn(),
+      env: vi.fn(),
     };
 
     globalThis.Cypress = mockCypress as any;

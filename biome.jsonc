@@ -52,9 +52,8 @@
       // fixtures, node: imports for filesystem mocking, and long scenario
       // bodies asserting many related expectations are all normal here. Tests
       // also await inside loops to sequence fixture setup, use magic numbers
-      // in assertions, span multiple files to organize related suites, print
-      // progress to console, and stub collaborators with empty mock function
-      // bodies (e.g. `vi.fn(() => {})`) where the return value is irrelevant.
+      // in assertions, span multiple files to organize related suites, and
+      // print progress to console.
       "includes": ["test/**", "example/**/cypress/**"],
       "linter": {
         "rules": {
@@ -66,7 +65,7 @@
             "noNonNullAssertion": "off",
             "noExcessiveLinesPerFile": "off"
           },
-          "suspicious": { "noConsole": "off", "noEmptyBlockStatements": "off" }
+          "suspicious": { "noConsole": "off" }
         }
       }
     },
