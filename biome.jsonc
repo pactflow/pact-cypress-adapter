@@ -90,6 +90,18 @@
           "suspicious": { "noConsole": "off" }
         }
       }
+    },
+    {
+      // The example is a separate npm project whose dependencies are installed
+      // on demand by `npm run test:example`, so nothing here resolves during a
+      // root `biome check` on a fresh checkout. The example's imports are
+      // verified by its own build and Cypress run instead.
+      "includes": ["example/todo-example/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noUnresolvedImports": "off" }
+        }
+      }
     }
   ]
 }
