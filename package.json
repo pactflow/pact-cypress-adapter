@@ -24,7 +24,7 @@
     "fmt:fix": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --write --unsafe .",
-    "test:example": "cd example/todo-example && npm i && npm run build && npm run http-server && npm run cypress:run",
+    "test:example": "cd example/todo-example && npm i && npm run check && npm run build && npm run http-server && npm run cypress:run",
     "release": "standard-version"
   },
   "author": "",
