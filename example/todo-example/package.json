@@ -48,7 +48,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.7.0",
     "http-server": "14.1.1",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "tsx": "4.23.1",
     "vite": "8.1.5"
   }
