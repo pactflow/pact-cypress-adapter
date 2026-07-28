@@ -1,0 +1,41 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  // The example is a standalone npm project, not a workspace member: its
+  // dependencies are installed on demand by `npm run test:example`. It extends
+  // the root config so it shares the same formatting and `preset: "all"` lint
+  // rules, and holds only what is specific to the example.
+  "extends": "//",
+  "linter": {
+    "rules": {
+      "correctness": {
+        // The example's dependencies are installed on demand, so nothing here
+        // resolves during a root `biome check` on a fresh checkout. The
+        // example's imports are verified by its own build and Cypress run.
+        "noUnresolvedImports": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // Cypress specs share the test idioms the root config allows for its own
+      // Vitest suite: long scenario bodies asserting many related expectations,
+      // magic numbers in assertions, and progress logged to the console.
+      // Cypress's afterEach/beforeEach hooks are also a normal place to assert
+      // on recorded interceptions, but Biome's noMisplacedAssertion rule only
+      // recognizes it()/test() bodies as valid assertion containers.
+      "includes": ["cypress/**"],
+      "linter": {
+        "rules": {
+          "complexity": { "noExcessiveLinesPerFunction": "off" },
+          "performance": { "noAwaitInLoops": "off" },
+          "style": {
+            "noMagicNumbers": "off",
+            "noNonNullAssertion": "off",
+            "noExcessiveLinesPerFile": "off"
+          },
+          "suspicious": { "noConsole": "off", "noMisplacedAssertion": "off" }
+        }
+      }
+    }
+  ]
+}

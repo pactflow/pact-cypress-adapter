@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "root": true,
   "assist": { "actions": { "recommended": true } },
   "formatter": { "useEditorconfig": true },
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
@@ -62,11 +63,11 @@
       // also await inside loops to sequence fixture setup, use magic numbers
       // in assertions, legitimately grow long because splitting a cohesive
       // suite hurts readability more than length does, and print progress to
-      // console. Cypress's `afterEach`/`beforeEach` hooks are also a normal
+      // console. Vitest's `afterEach`/`beforeEach` hooks are also a normal
       // place to assert on recorded interceptions, but Biome's
       // noMisplacedAssertion rule only recognizes `it()`/`test()` bodies as
       // valid assertion containers.
-      "includes": ["test/**", "example/**/cypress/**"],
+      "includes": ["test/**"],
       "linter": {
         "rules": {
           "complexity": { "noExcessiveLinesPerFunction": "off" },
@@ -88,18 +89,6 @@
       "linter": {
         "rules": {
           "suspicious": { "noConsole": "off" }
-        }
-      }
-    },
-    {
-      // The example is a separate npm project whose dependencies are installed
-      // on demand by `npm run test:example`, so nothing here resolves during a
-      // root `biome check` on a fresh checkout. The example's imports are
-      // verified by its own build and Cypress run instead.
-      "includes": ["example/todo-example/**"],
-      "linter": {
-        "rules": {
-          "correctness": { "noUnresolvedImports": "off" }
         }
       }
     }
