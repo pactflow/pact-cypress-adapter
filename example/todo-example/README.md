@@ -264,7 +264,7 @@ example/todo-example/
 │   └── App.jsx                      # Simple todo list component
 ├── cypress.config.js                # Cypress configuration
 ├── eslint.config.js                 # ESLint rules for cypress/**/*.js
-├── biome.jsonc (repo root)          # Code formatting and linting rules
+├── biome.jsonc                      # Formatting and lint rules; extends the repo root
 ├── package.json
 └── README.md                        # This file
 ```
@@ -411,12 +411,15 @@ afterEach(() => {
 })
 ```
 
-### ESLint Errors in IDE
+### Lint Errors in IDE
 
-**Solution:** Install ESLint extension for your IDE:
+Biome handles formatting and most linting; ESLint covers only the Cypress-specific
+rules on `cypress/**/*.js`. You need both to see everything the build sees.
 
-- **VS Code**: Install "ESLint" extension
-- **IntelliJ**: Enable ESLint in Preferences
+**Solution:** Install both extensions for your IDE:
+
+- **VS Code**: Install the "Biome" and "ESLint" extensions
+- **IntelliJ**: Install the Biome plugin and enable ESLint in Preferences
 
 ### Tests Fail: "cy.setupPact is not a function"
 
@@ -461,7 +464,7 @@ This example demonstrates:
 ✅ TypeScript support for better IDE experience
 ✅ Custom commands to reduce test boilerplate
 ✅ Comprehensive assertions beyond just status codes
-✅ Professional code quality with ESLint + Prettier
+✅ Professional code quality with Biome, plus Cypress-specific ESLint rules
 ✅ Two contract testing patterns: mocking and real requests
 
 The React app is intentionally minimal to keep focus on Cypress and Pact patterns.
