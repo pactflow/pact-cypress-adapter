@@ -35,7 +35,7 @@
     "@types/node": "24.13.3",
     "@vitest/ui": "4.1.10",
     "cypress": "15.20.0",
-    "commit-and-tag-version": "9.5.0",
+    "commit-and-tag-version": "9.6.0",
     "typescript": "5.9.3",
     "vitest": "4.1.10"
   },
