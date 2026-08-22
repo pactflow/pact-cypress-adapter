@@ -33,11 +33,11 @@
     "@biomejs/biome": "2.5.7",
     "@types/lodash": "4.17.25",
     "@types/node": "24.13.3",
-    "@vitest/ui": "4.1.10",
+    "@vitest/ui": "4.1.11",
     "cypress": "15.20.0",
     "commit-and-tag-version": "9.5.0",
     "typescript": "5.9.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "peerDependencies": {
     "cypress": "*"
