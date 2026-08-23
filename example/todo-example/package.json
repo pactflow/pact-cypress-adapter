@@ -42,7 +42,7 @@
     "eslint": "10.8.1",
     "eslint-plugin-cypress": "7.0.0",
     "http-server": "14.1.1",
-    "tsx": "4.23.11",
+    "tsx": "4.23.12",
     "vite": "8.2.2"
   }
 }
