@@ -43,6 +43,6 @@
     "eslint-plugin-cypress": "7.0.0",
     "http-server": "14.1.1",
     "tsx": "4.23.11",
-    "vite": "8.2.1"
+    "vite": "8.2.2"
   }
 }
