@@ -34,7 +34,7 @@
     "@types/lodash": "4.17.25",
     "@types/node": "24.13.3",
     "@vitest/ui": "4.1.11",
-    "cypress": "15.21.0",
+    "cypress": "15.21.1",
     "commit-and-tag-version": "9.6.0",
     "typescript": "5.9.3",
     "vitest": "4.1.11"
