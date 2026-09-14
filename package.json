@@ -32,7 +32,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.12",
     "@types/lodash": "4.17.25",
-    "@types/node": "24.13.3",
+    "@types/node": "24.13.4",
     "@vitest/ui": "5.0.0",
     "cypress": "15.21.1",
     "commit-and-tag-version": "9.6.0",
