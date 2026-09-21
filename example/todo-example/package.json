@@ -39,7 +39,7 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.1",
     "cypress": "15.21.1",
-    "eslint": "10.10.0",
+    "eslint": "10.11.0",
     "eslint-plugin-cypress": "7.0.2",
     "http-server": "14.1.1",
     "tsx": "4.23.13",
