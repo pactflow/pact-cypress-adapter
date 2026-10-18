@@ -24,7 +24,7 @@
     "check": "biome check .",
     "check:fix": "biome check --write --unsafe .",
     "test:example": "cd example/todo-example && npm i && npm run check && npm run build && npm run http-server && npm run cypress:run",
-    "release": "standard-version"
+    "release": "commit-and-tag-version"
   },
   "author": "",
   "license": "MIT",
@@ -43,10 +43,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pactflow/cypress-pact-adapter.git"
+    "url": "git+https://github.com/pactflow/pact-cypress-adapter.git"
   },
   "bugs": {
-    "url": "https://github.com/pactflow/cypress-pact-adapter/issues"
+    "url": "https://github.com/pactflow/pact-cypress-adapter/issues"
   },
-  "homepage": "https://github.com/pactflow/cypress-pact-adapter#readme"
+  "homepage": "https://github.com/pactflow/pact-cypress-adapter#readme"
 }

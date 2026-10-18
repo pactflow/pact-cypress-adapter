@@ -1,6 +1,6 @@
 # Pact Cypress Adapter
 
-[![Build and test](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/cypress-pact-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter)
+[![Build and test](https://github.com/pactflow/pact-cypress-adapter/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/pactflow/pact-cypress-adapter/actions/workflows/test-and-build.yaml) [![npm version](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter.svg)](https://badge.fury.io/js/@pactflow%2Fpact-cypress-adapter)
 
 Generate Pact contracts from your existing Cypress tests.
 

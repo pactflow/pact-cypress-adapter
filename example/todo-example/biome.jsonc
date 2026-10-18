@@ -1,5 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "root": false,
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
   // The example is a standalone npm project, not a workspace member: its
   // dependencies are installed on demand by `npm run test:example`. It extends
   // the root config so it shares the same formatting and `preset: "all"` lint
