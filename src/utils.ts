@@ -1,5 +1,4 @@
 import type { Interception } from "cypress/types/net-stubbing";
-import pjson from "../package.json";
 import type {
   AliasType,
   HeaderType,
@@ -9,6 +8,9 @@ import type {
   PrefixedAliasType,
   XHRRequestAndResponse,
 } from "./types";
+
+// biome-ignore lint/style/noCommonJs: an import would pull package.json into the TypeScript program and nest the build output under dist/src/
+const pjson = require("../package.json") as { version: string };
 
 const constructFilePath = ({ consumerName, providerName }: PactConfigType) =>
   `cypress/pacts/${providerName}-${consumerName}.json`;
