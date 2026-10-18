@@ -1,0 +1,137 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  STABLE_NODE_VERSION: '24'
+  FORCE_COLOR: '1'
+
+jobs:
+  # MARK: Sentinel
+
+  # Branch protection requires this job alone, so the job list can change
+  # without touching the ruleset. Skipped jobs count as passing.
+  complete:
+    name: Test completion check
+    if: always()
+
+    permissions:
+      contents: none
+
+    runs-on: ubuntu-latest
+    needs:
+      - check
+      - build
+      - test
+
+    steps:
+      - name: Failed
+        run: exit 1
+        if: |
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+
+  # MARK: Static checks
+
+  check:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.STABLE_NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+
+      - name: Check format and lint
+        run: npx biome ci .
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.STABLE_NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+
+      - name: Build
+        run: npm run build
+
+      - name: Check the npm tarball
+        run: npm run check:pack
+
+  # MARK: Tests
+
+  test:
+    name: Test Node ${{ matrix.node-version }}
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - '22'
+          - '24'
+          - '26'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            example/todo-example/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Cypress example
+        run: npm run test:example
