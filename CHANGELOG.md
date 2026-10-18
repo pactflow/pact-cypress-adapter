@@ -1,6 +1,10 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file.
+
+<!-- markdownlint-disable no-duplicate-heading -->
+<!-- markdownlint-disable emph-style -->
+<!-- markdownlint-disable strong-style -->
 
 ## [1.3.0](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.6...v1.3.0) (2022-09-22)
 

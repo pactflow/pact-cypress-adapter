@@ -1,0 +1,252 @@
+# Release workflow for @pactflow/pact-cypress-adapter. RELEASING.md describes
+# the process for maintainers.
+#
+#   prepare  (push to main)           -> update the draft release PR
+#   dry-run  (ready release PR)       -> build, pack and check the release
+#   tag      (release PR merged)      -> tag the merge commit v{version}
+#   publish  (push of a v* tag)       -> npm publish (OIDC) + GitHub release
+name: release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - closed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+  # MARK: Sentinel
+
+  complete:
+    name: Release completion check
+    if: always()
+
+    permissions:
+      contents: none
+
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - dry-run
+      - tag
+      - publish
+
+    steps:
+      - name: Failed
+        run: exit 1
+        if: |
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+
+  # MARK: Prepare
+
+  prepare:
+    name: Update release PR
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.PACTFLOW_CI_BOT_APP_ID }}
+          private-key: ${{ secrets.PACTFLOW_CI_BOT_PRIVATE_KEY }}
+
+      # The App token lets the release PR's pushes start workflows, which
+      # GITHUB_TOKEN pushes cannot.
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "$(gh api "/users/${APP_SLUG}[bot]" --jq .id)+${APP_SLUG}[bot]@users.noreply.github.com"
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@1168f6810a3cb30a3514bf5756a3b7f0422c6df8 # v2.87.28
+        with:
+          tool: git-cliff
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Update release PR
+        run: node scripts/release.mts prepare
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+  # MARK: Dry run
+
+  dry-run:
+    name: Verify release
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.action != 'closed'
+      && !github.event.pull_request.draft
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.head.ref == 'release/pact-cypress-adapter'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+
+      - name: Check version and changelog
+        run: node scripts/release.mts check
+
+      - name: Build
+        run: npm run build
+
+      - name: Check the npm tarball
+        run: npm run check:pack
+
+  # MARK: Tag
+
+  tag:
+    name: Create release tag
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.merged
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.head.ref == 'release/pact-cypress-adapter'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.PACTFLOW_CI_BOT_APP_ID }}
+          private-key: ${{ secrets.PACTFLOW_CI_BOT_PRIVATE_KEY }}
+
+      # The tag goes on the merge commit, which carries the release PR's
+      # package.json and CHANGELOG.md even if main has moved on since.
+      - name: Checkout merge commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "$(gh api "/users/${APP_SLUG}[bot]" --jq .id)+${APP_SLUG}[bot]@users.noreply.github.com"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # The App token's push starts the publish job, which a GITHUB_TOKEN
+      # push would not.
+      - name: Create and push tag
+        run: node scripts/release.mts tag
+
+  # MARK: Publish
+
+  publish:
+    name: Publish to npm
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/@pactflow/pact-cypress-adapter
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm 11.5.1 or later.
+      - name: Update npm
+        run: npm install --global npm@latest
+
+      - name: Check the tag matches package.json
+        run: |
+          version=$(node --print 'require("./package.json").version')
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+
+      - name: Build
+        run: npm run build
+
+      - name: Check the npm tarball
+        run: npm run check:pack
+
+      # Skipping a version npm already has lets a failed release step be
+      # re-run on its own.
+      - name: Publish to npm
+        run: |
+          name=$(node --print 'require("./package.json").name')
+          if npm view "${name}@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1; then
+            echo "${name}@${GITHUB_REF_NAME#v} is already on npm."
+          else
+            npm publish --access public
+          fi
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/release.mts notes "${GITHUB_REF_NAME}" > "${RUNNER_TEMP}/notes.md"
+          gh release create "${GITHUB_REF_NAME}" \
+            --verify-tag \
+            --title "${GITHUB_REF_NAME}" \
+            --notes-file "${RUNNER_TEMP}/notes.md"
