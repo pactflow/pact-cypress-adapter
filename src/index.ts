@@ -36,12 +36,17 @@ const setupPact = (consumerName: string, providerName: string) => {
   pactConfig.providerName = providerName;
 };
 
-const ignoreDefaultBlocklist =
-  Cypress.expose("ignoreDefaultBlocklist") ??
-  Cypress.env("ignoreDefaultBlocklist") ??
-  false;
-const globalBlocklist =
-  Cypress.expose("headersBlocklist") ?? Cypress.env("headersBlocklist") ?? [];
+// Cypress.expose() arrived in 15.10 and Cypress.env() was removed in 16, so
+// read whichever this Cypress version provides.
+const cypressCompat = Cypress as unknown as {
+  expose?: (key: string) => unknown;
+  env?: (key: string) => unknown;
+};
+const readConfig = (key: string) =>
+  cypressCompat.expose?.(key) ?? cypressCompat.env?.(key);
+
+const ignoreDefaultBlocklist = readConfig("ignoreDefaultBlocklist") ?? false;
+const globalBlocklist = (readConfig("headersBlocklist") ?? []) as string[];
 let headersBlocklist: string[] = ignoreDefaultBlocklist
   ? globalBlocklist
   : [...globalBlocklist, ...AUTOGEN_HEADER_BLOCKLIST];
