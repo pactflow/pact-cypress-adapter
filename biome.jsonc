@@ -83,6 +83,17 @@
       }
     },
     {
+      // Release and packaging scripts are Node CLIs that shell out to git, gh
+      // and npm, and report to the CI log.
+      "includes": ["scripts/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "off" },
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    },
+    {
       // The Cypress plugin's console output is user-facing progress
       // reporting, not debug residue.
       "includes": ["src/plugin.ts"],
