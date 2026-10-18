@@ -3,27 +3,18 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "baseUrl": "src",
     "sourceMap": true,
-    "noLib": false,
+    "strict": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "resolveJsonModule": true,
-    "strictNullChecks": true,
     "module": "node20",
     "moduleResolution": "nodenext",
     "noEmitOnError": true,
-    "emitDecoratorMetadata": true,
     "declaration": true,
-    "experimentalDecorators": true,
     "target": "ES2022",
     "lib": ["ES2023"],
-    "types": ["node", "cypress", "vitest/globals"],
+    "types": ["node", "cypress"],
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "isolatedModules": true
   },
-  "include": ["src"],
-  "exclude": ["./node_modules/**", "dist", "examples"]
+  "include": ["src"]
 }
