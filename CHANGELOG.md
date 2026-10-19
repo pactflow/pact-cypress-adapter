@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 <!-- markdownlint-disable emph-style -->
 <!-- markdownlint-disable strong-style -->
 
+## [2.0.1] _2026-10-19_
+
+### 🐛 Bug Fixes
+
+-   _(ci)_ Read npm 12's pack output in check-pack
+
+### ⚙️ Build and CI
+
+-   Dry-run the whole publish on release PRs
+
+### Contributors
+
+-   @JP-Ellis
+
 ## [2.0.0] _2026-10-19_
 
 > [!IMPORTANT]
