@@ -1,6 +1,7 @@
 import type { Interception } from "cypress/types/net-stubbing";
 import type {
   AliasType,
+  CypressConfigSource,
   HeaderType,
   Interaction,
   PactConfigType,
@@ -86,6 +87,31 @@ const constructInteraction = (
 // biome-ignore lint/suspicious/noExplicitAny: fs is injected by the Cypress plugin host and is untyped
 const isFileExisted = async (fs: any, filename: string) =>
   Boolean(await fs.stat(filename).catch(() => false));
+
+/**
+ * A user config value from `Cypress.expose()`, falling back to `Cypress.env()`.
+ * Cypress 15.10 added `expose()` and the `allowCypressEnv` option. Cypress 16
+ * keeps `env()` as a stub that always throws.
+ */
+export const readCypressConfig = (
+  cypress: CypressConfigSource,
+  key: string,
+): unknown => {
+  const exposed = cypress.expose?.(key);
+  if (
+    exposed !== undefined ||
+    !cypress.env ||
+    cypress.config?.("allowCypressEnv") === false
+  ) {
+    return exposed;
+  }
+  try {
+    return cypress.env(key);
+  } catch {
+    // Cypress 16's env() stub throws, which leaves the key unset.
+    return exposed;
+  }
+};
 
 export const formatAlias = (alias: AliasType): PrefixedAliasType[] => {
   if (Array.isArray(alias)) {

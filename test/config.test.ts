@@ -1,152 +1,69 @@
-// biome-ignore-all lint/suspicious/noExplicitAny: test doubles are deliberately loosely typed
+import { describe, expect, it, vi } from "vitest";
+import type { CypressConfigSource } from "../src/types";
+import { readCypressConfig } from "../src/utils";
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+const getter = (values: Record<string, unknown>) =>
+  vi.fn((key: string) => values[key]);
 
-interface MockCypress {
-  expose: (key: string) => unknown;
-  env: (key: string) => unknown;
-}
-
-describe("Configuration Loading", () => {
-  let originalCypress: typeof Cypress;
-
-  beforeEach(() => {
-    // Store original Cypress
-    originalCypress = globalThis.Cypress as typeof Cypress;
+const throwing = () =>
+  vi.fn(() => {
+    throw new Error("Cypress.env() has been removed");
   });
 
-  afterEach(() => {
-    // Restore original Cypress
-    if (originalCypress) {
-      globalThis.Cypress = originalCypress;
-    }
-  });
-
-  it("should prefer Cypress.expose() over Cypress.env() for headersBlocklist", () => {
-    // Setup mock Cypress object
-    const mockCypress: MockCypress = {
-      expose: vi.fn((key: string) => {
-        if (key === "headersBlocklist") {
-          return ["exposed-header"];
-        }
-      }),
-      env: vi.fn(),
+describe("readCypressConfig", () => {
+  it("reads env on Cypress before 15.10, which has no expose", () => {
+    const cypress: CypressConfigSource = {
+      env: getter({ headersBlocklist: ["env-header"] }),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    // Simulate the config loading logic
-    const globalBlocklist =
-      cypress.expose("headersBlocklist") ??
-      cypress.env("headersBlocklist") ??
-      [];
-
-    // Should use Cypress.expose() value, not Cypress.env()
-    expect(globalBlocklist).toEqual(["exposed-header"]);
-    expect(mockCypress.expose).toHaveBeenCalledWith("headersBlocklist");
+    expect(readCypressConfig(cypress, "headersBlocklist")).toEqual([
+      "env-header",
+    ]);
   });
 
-  it("should fallback to Cypress.env() when Cypress.expose() is undefined for headersBlocklist", () => {
-    const mockCypress: MockCypress = {
-      expose: vi.fn(),
-      env: vi.fn((key: string) => {
-        if (key === "headersBlocklist") {
-          return ["env-header"];
-        }
-      }),
+  it("prefers expose over env", () => {
+    const cypress: CypressConfigSource = {
+      expose: getter({ headersBlocklist: ["exposed-header"] }),
+      env: getter({ headersBlocklist: ["env-header"] }),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    const globalBlocklist =
-      cypress.expose("headersBlocklist") ??
-      cypress.env("headersBlocklist") ??
-      [];
-
-    // Should fallback to Cypress.env() value
-    expect(globalBlocklist).toEqual(["env-header"]);
+    expect(readCypressConfig(cypress, "headersBlocklist")).toEqual([
+      "exposed-header",
+    ]);
   });
 
-  it("should use default value when both Cypress.expose() and Cypress.env() are undefined", () => {
-    const mockCypress: MockCypress = {
-      expose: vi.fn(),
-      env: vi.fn(),
+  it("keeps a falsy expose value", () => {
+    const cypress: CypressConfigSource = {
+      expose: getter({ ignoreDefaultBlocklist: false }),
+      env: getter({ ignoreDefaultBlocklist: true }),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    const globalBlocklist =
-      cypress.expose("headersBlocklist") ??
-      cypress.env("headersBlocklist") ??
-      [];
-
-    // Should use default empty array
-    expect(globalBlocklist).toEqual([]);
+    expect(readCypressConfig(cypress, "ignoreDefaultBlocklist")).toBe(false);
   });
 
-  it("should prefer Cypress.expose() over Cypress.env() for ignoreDefaultBlocklist", () => {
-    const mockCypress: MockCypress = {
-      expose: vi.fn((key: string) => {
-        if (key === "ignoreDefaultBlocklist") {
-          return true;
-        }
-      }),
-      env: vi.fn(),
+  it("falls back to env on Cypress 15 when expose lacks the key", () => {
+    const cypress: CypressConfigSource = {
+      expose: getter({}),
+      env: getter({ ignoreDefaultBlocklist: true }),
+      config: getter({ allowCypressEnv: true }),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    const ignoreDefaultBlocklist =
-      cypress.expose("ignoreDefaultBlocklist") ??
-      cypress.env("ignoreDefaultBlocklist") ??
-      false;
-
-    // Should use Cypress.expose() value, not Cypress.env()
-    expect(ignoreDefaultBlocklist).toBe(true);
-    expect(mockCypress.expose).toHaveBeenCalledWith("ignoreDefaultBlocklist");
+    expect(readCypressConfig(cypress, "ignoreDefaultBlocklist")).toBe(true);
   });
 
-  it("should fallback to Cypress.env() when Cypress.expose() is undefined for ignoreDefaultBlocklist", () => {
-    const mockCypress: MockCypress = {
-      expose: vi.fn(),
-      env: vi.fn((key: string) => {
-        if (key === "ignoreDefaultBlocklist") {
-          return true;
-        }
-      }),
+  it("leaves env alone on Cypress 15 when allowCypressEnv is false", () => {
+    const env = throwing();
+    const cypress: CypressConfigSource = {
+      expose: getter({}),
+      env,
+      config: getter({ allowCypressEnv: false }),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    const ignoreDefaultBlocklist =
-      cypress.expose("ignoreDefaultBlocklist") ??
-      cypress.env("ignoreDefaultBlocklist") ??
-      false;
-
-    // Should fallback to Cypress.env() value
-    expect(ignoreDefaultBlocklist).toBe(true);
+    expect(readCypressConfig(cypress, "headersBlocklist")).toBeUndefined();
+    expect(env).not.toHaveBeenCalled();
   });
 
-  it("should use default value when both Cypress.expose() and Cypress.env() are undefined for ignoreDefaultBlocklist", () => {
-    const mockCypress: MockCypress = {
-      expose: vi.fn(),
-      env: vi.fn(),
+  it("returns undefined on Cypress 16, whose env always throws", () => {
+    const cypress: CypressConfigSource = {
+      expose: getter({}),
+      env: throwing(),
+      config: getter({}),
     };
-
-    globalThis.Cypress = mockCypress as any;
-    const cypress = globalThis.Cypress as any;
-
-    const ignoreDefaultBlocklist =
-      cypress.expose("ignoreDefaultBlocklist") ??
-      cypress.env("ignoreDefaultBlocklist") ??
-      false;
-
-    // Should use default false
-    expect(ignoreDefaultBlocklist).toBe(false);
+    expect(readCypressConfig(cypress, "headersBlocklist")).toBeUndefined();
   });
 });

@@ -4,11 +4,12 @@ import { AUTOGEN_HEADER_BLOCKLIST } from "./constants";
 import type {
   AliasType,
   AnyObject,
+  CypressConfigSource,
   PactConfigType,
   RequestOptionType,
   XHRRequestAndResponse,
 } from "./types";
-import { formatAlias, writePact } from "./utils";
+import { formatAlias, readCypressConfig, writePact } from "./utils";
 
 declare global {
   // biome-ignore lint/style/noNamespace: augmenting Cypress.Chainable requires namespace syntax
@@ -36,14 +37,8 @@ const setupPact = (consumerName: string, providerName: string) => {
   pactConfig.providerName = providerName;
 };
 
-// Cypress.expose() arrived in 15.10 and Cypress.env() was removed in 16, so
-// read whichever this Cypress version provides.
-const cypressCompat = Cypress as unknown as {
-  expose?: (key: string) => unknown;
-  env?: (key: string) => unknown;
-};
 const readConfig = (key: string) =>
-  cypressCompat.expose?.(key) ?? cypressCompat.env?.(key);
+  readCypressConfig(Cypress as unknown as CypressConfigSource, key);
 
 const ignoreDefaultBlocklist = readConfig("ignoreDefaultBlocklist") ?? false;
 const globalBlocklist = (readConfig("headersBlocklist") ?? []) as string[];
