@@ -8,6 +8,11 @@ Generate Pact contracts from your existing Cypress tests.
 >
 > Read our [blog post](https://pactflow.io/blog/use-cypress-in-contract-testing/) to find out more, otherwise dive-right in.
 
+## Requirements
+
+- Cypress 12.17.4 or later. Earlier versions bundle support files with webpack 4, which cannot parse this package.
+- A maintained Node.js release, currently 22 or later.
+
 ## Installation
 
 Use your favourite Node package manager:
@@ -42,32 +47,6 @@ Then, update your `cypress/support/e2e.js` file to include the Pact Cypress comm
 ```js
 import '@pactflow/pact-cypress-adapter'
 ```
-
-<details>
-<summary>Legacy Setup (Cypress 9.x and below)</summary>
-
-> [!NOTE]
->
-> This setup is for legacy Cypress versions. If you're using a recent version of Cypress, use the setup above.
-
-Setup your cypress plugin at `cypress/plugins/index.js`:
-
-```js
-const pactCypressPlugin = require('@pactflow/pact-cypress-adapter/dist/plugin')
-const fs = require('fs')
-
-module.exports = (on, config) => {
-  pactCypressPlugin(on, config, fs)
-}
-```
-
-Finally, update `cypress/support/index.js` file to include cypress-pact commands:
-
-```js
-import '@pactflow/pact-cypress-adapter'
-```
-
-</details>
 
 ## Configuration
 
@@ -135,19 +114,7 @@ module.exports = defineConfig({
 })
 ```
 
-For Cypress versions 9.x and below, use `cypress.json`:
-
-```js
-{
-    ...otherCypressConfig,
-    "env": {
-        "headersBlocklist": ["ignore-me-globally"],
-        "ignoreDefaultBlocklist": true
-    }
-}
-```
-
-**Migration Note:** `Cypress.env()` is deprecated as of Cypress 15.10.0 and will be removed in Cypress 16. Please migrate to `expose` configuration above. The adapter supports both for backward compatibility.
+**Migration Note:** Cypress 15.10.0 deprecated `Cypress.env()`, and Cypress 16 removed it. Use the `expose` configuration above on Cypress 15.10.0 and later. The adapter reads `expose` first and falls back to `env`.
 
 </details>
 
