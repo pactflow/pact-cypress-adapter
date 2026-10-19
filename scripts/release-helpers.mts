@@ -1,14 +1,9 @@
-/**
- * Pure helpers for scripts/release.mts, kept apart so tests can import them
- * without running git or gh.
- */
+/** Pure helpers for scripts/release.mts. */
 
 const RE_LEADING_V = /^v/;
 const RE_VERSION_FIELD = /^(\s*"version"\s*:\s*")[^"]*(")/m;
 const RE_REGEX_SPECIAL = /[.*+?^${}()|[\]\\]/g;
-// standard-version wrote patch releases as `### [x.y.z]`, so a level-three
-// heading that starts with a version also ends a section.
-const RE_SECTION_HEADING = /^(## |### \[?v?\d+\.\d+\.\d+)/;
+const RE_SECTION_HEADING = /^## /;
 
 export function stripV(version: string): string {
   return version.replace(RE_LEADING_V, "");
