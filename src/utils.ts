@@ -21,22 +21,11 @@ const uniqByProperty = <T extends Record<string, any>>(
   arr: T[],
   property: keyof T,
 ): T[] => {
-  const seen = new Map();
-  // Process from end to keep latest occurrence
-  for (let i = arr.length - 1; i >= 0; i -= 1) {
-    const value = arr[i][property];
-    if (!seen.has(value)) {
-      seen.set(value, true);
-    }
+  const lastIndex = new Map<unknown, number>();
+  for (const [index, item] of arr.entries()) {
+    lastIndex.set(item[property], index);
   }
-  return arr.filter((item) => {
-    const value = item[property];
-    if (seen.has(value)) {
-      seen.delete(value);
-      return true;
-    }
-    return false;
-  });
+  return arr.filter((item, index) => lastIndex.get(item[property]) === index);
 };
 
 // Helper to remove specified keys from object
