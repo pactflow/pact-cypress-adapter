@@ -27,12 +27,21 @@ const built = readdirSync(join(ROOT, "dist"), { recursive: true })
   .map((path) => join("dist", path));
 const expected = new Set([pkg.main, pkg.types, ...built].map(normalize));
 
-const [pack] = JSON.parse(
+type PackResult = { files: { path: string }[] };
+
+// npm 11 prints an array of results. npm 12 prints an object keyed by name.
+const output = JSON.parse(
   execFileSync("npm", ["pack", "--dry-run", "--json"], {
     cwd: ROOT,
     encoding: "utf8",
   }),
-) as [{ files: { path: string }[] }];
+) as PackResult[] | Record<string, PackResult>;
+let pack: PackResult;
+if (Array.isArray(output)) {
+  [pack] = output;
+} else {
+  [pack] = Object.values(output);
+}
 const packed = new Set(pack.files.map((file) => normalize(file.path)));
 
 const missing = [...expected].filter((path) => !packed.has(path));
