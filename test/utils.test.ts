@@ -116,6 +116,44 @@ describe("constructPactFile", () => {
     expect(result.provider.name).toBe("todo-api");
     expect(result.interactions.length).toBe(1);
   });
+
+  it("should replace an interaction with the same description by the latest one", () => {
+    const pactConfig = {
+      consumerName: "ui-consumer",
+      providerName: "todo-api",
+    };
+    const intercept = (statusCode: number) =>
+      ({
+        request: { method: "GET", url: "https://localhost:3000/todo" },
+        response: { statusCode, statusText: "" },
+      }) as XHRRequestAndResponse;
+    const first = constructPactFile({
+      intercept: intercept(200),
+      testCaseTitle: "shows todo",
+      pactConfig,
+    });
+    const second = constructPactFile({
+      intercept: intercept(201),
+      testCaseTitle: "create todo",
+      pactConfig,
+      content: first,
+    });
+    const result = constructPactFile({
+      intercept: intercept(500),
+      testCaseTitle: "shows todo",
+      pactConfig,
+      content: second,
+    });
+    expect(
+      result.interactions.map(({ description, response }) => [
+        description,
+        response.status,
+      ]),
+    ).toEqual([
+      ["create todo", 201],
+      ["shows todo", 500],
+    ]);
+  });
 });
 
 describe("readFile", () => {
