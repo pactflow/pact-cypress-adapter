@@ -12,25 +12,25 @@ All notable changes to this project will be documented in this file.
 
 - Add client name/version into pact file ([bf1c86d](https://github.com/pactflow/cypress-pact-adapter/commit/bf1c86d475a48f50265691a14f477f7c5fcebae2))
 
-### [1.2.6](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.5...v1.2.6) (2022-03-10)
+## [1.2.6](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.5...v1.2.6) (2022-03-10)
 
 ### Bug Fixes
 
 - missing index.d.ts ([22642b6](https://github.com/pactflow/cypress-pact-adapter/commit/22642b6681ce7446aad68c9409e8ef93ae71f042))
 
-### [1.2.5](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.4...v1.2.5) (2022-03-10)
+## [1.2.5](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.4...v1.2.5) (2022-03-10)
 
-### [1.2.4](https://github.com/pactflow/cypress-pact-adaptor/compare/v1.2.3...v1.2.4) (2022-03-09)
+## [1.2.4](https://github.com/pactflow/cypress-pact-adaptor/compare/v1.2.3...v1.2.4) (2022-03-09)
 
-### [1.2.3](https://github.com/pactflow/cypress-pact/compare/v1.2.2...v1.2.3) (2022-03-09)
+## [1.2.3](https://github.com/pactflow/cypress-pact/compare/v1.2.2...v1.2.3) (2022-03-09)
 
 ### Bug Fixes
 
 - missing auto generated headers when no setupPactHeaderBlocklist is called ([955d215](https://github.com/pactflow/cypress-pact/commit/955d2150c9d11423e1e91ece6581636bbcc1e8e3))
 
-### [1.2.2](https://github.com/pactflow/cypress-pact/compare/v1.2.1...v1.2.2) (2022-03-09)
+## [1.2.2](https://github.com/pactflow/cypress-pact/compare/v1.2.1...v1.2.2) (2022-03-09)
 
-### [1.2.1](https://github.com/pactflow/cypress-pact/compare/v1.2.0...v1.2.1) (2022-03-09)
+## [1.2.1](https://github.com/pactflow/cypress-pact/compare/v1.2.0...v1.2.1) (2022-03-09)
 
 ## [1.2.0](https://github.com/pactflow/cypress-pact/compare/v1.1.0...v1.2.0) (2022-03-09)
 
@@ -57,4 +57,4 @@ All notable changes to this project will be documented in this file.
 
 - XHRrequestAndResponse type with body and headers ([30fb932](https://github.com/pactflow/cypress-pact/commit/30fb932f693ccd7acb9252ee948b802df750eee4))
 
-### 1.0.1 (2022-03-01)
+## 1.0.1 (2022-03-01)
