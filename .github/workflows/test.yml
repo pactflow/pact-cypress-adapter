@@ -72,8 +72,13 @@ jobs:
       - name: Check format and lint
         run: npx biome ci .
 
+  # MARK: Ready PRs
+
+  # Draft PRs run only Biome. Marking a PR ready runs the rest.
+
   build:
     name: Build
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -95,8 +100,6 @@ jobs:
 
       - name: Check the npm tarball
         run: npm run check:pack
-
-  # MARK: Tests
 
   test:
     name: Test Node ${{ matrix.node-version }}
