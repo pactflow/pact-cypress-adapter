@@ -13,7 +13,6 @@ export default defineConfig({
   },
   expose: {
     headersBlocklist: ["ignore-me-globally"],
-    ignoreDefaultBlocklist: false,
   },
   e2e: {
     baseUrl: "http://localhost:3000",
