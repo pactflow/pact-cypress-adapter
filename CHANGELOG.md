@@ -6,6 +6,42 @@ All notable changes to this project will be documented in this file.
 <!-- markdownlint-disable emph-style -->
 <!-- markdownlint-disable strong-style -->
 
+## [2.0.0] _2026-10-19_
+
+> [!IMPORTANT]
+> This release has no breaking changes beyond raising the minimum supported versions:
+>
+> -   Cypress 12.17.4 or later. Earlier versions bundle support files with webpack 4, which cannot parse this package.
+> -   Node.js 22 or later.
+
+### 🚀 Features
+
+-   _(config)_ Read `headersBlocklist` and `ignoreDefaultBlocklist` from `Cypress.expose()`. When `expose` lacks a key, the adapter falls back to `Cypress.env()` where that still works.
+-   Support Cypress 16, which removed `Cypress.env()`.
+
+### 🐛 Bug Fixes
+
+-   _(types)_ Publish every type declaration file. 1.3.0 shipped `index.d.ts` without the `types.d.ts` it imports.
+
+### 📦 Packaging
+
+-   Declare `cypress >=12.17.4` as a peer dependency.
+-   Drop the runtime dependencies on `lodash`, `@types/lodash` and `@types/node`.
+-   Publish to npm through trusted publishing.
+
+### 📚 Documentation
+
+-   Update the README and the example project for current Cypress versions, and drop the Cypress 9 setup.
+-   Spell PactFlow with a capital F.
+
+### Contributors
+
+-   @JP-Ellis
+-   @Copilot
+-   @YOU54F
+-   @B3nnyL
+-   @piwysocki
+
 ## [1.3.0](https://github.com/pactflow/cypress-pact-adapter/compare/v1.2.6...v1.3.0) (2022-09-22)
 
 ### Features
