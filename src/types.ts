@@ -25,6 +25,13 @@ export type AliasType = string | string[];
 
 export type PrefixedAliasType = `@${string}`;
 
+/** The parts of the `Cypress` global that hold user configuration. */
+export type CypressConfigSource = {
+  expose?: (key: string) => unknown;
+  env?: (key: string) => unknown;
+  config?: (key: string) => unknown;
+};
+
 export type AnyObject = {
   [K in string | number]: unknown;
 };
