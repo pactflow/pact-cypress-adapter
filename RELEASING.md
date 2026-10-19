@@ -9,7 +9,10 @@ Releases run through a draft pull request that `.github/workflows/release.yml` k
    - The script writes that version to `package.json` and prepends a section to `CHANGELOG.md`.
    - It force-pushes both files to `release/pact-cypress-adapter`, behind a draft PR titled `chore(release): vX.Y.Z`.
    - `chore(deps)` and `fix(deps)` commits do not trigger a release.
-2. **Review.** Mark the PR ready for review. `test.yml` runs, and so does the `Verify release` job. That job fails when the version is already tagged or `CHANGELOG.md` has no section for it.
+2. **Review.** Mark the PR ready for review. `test.yml` runs, and so does the `Verify release` job.
+   - `Verify release` runs the publish steps from `.github/actions/publish` with `--dry-run`, using the same Node and npm versions as the real publish.
+   - It fails when the version is already tagged or `CHANGELOG.md` has no section for it.
+   - Its job summary shows the release notes.
 3. **Tag.** Merging the PR tags the merge commit `vX.Y.Z`, using the version in its `package.json`.
 4. **Publish.** The tag builds the package, publishes it to npm through trusted publishing, and creates the GitHub release. The release notes are the version's section of `CHANGELOG.md`.
 
@@ -26,7 +29,8 @@ When you change the version, rename the `CHANGELOG.md` heading to match. `Verify
 | Failure | State | Recovery |
 | --- | --- | --- |
 | `Create release tag` | PR merged, no tag | Re-run the job. |
-| `Publish to npm`, before npm publish | Tag only | Fix the cause, then re-run the job. |
+| `Publish to npm`, before npm publish, cause outside the repository | Tag only | Re-run the job. |
+| `Publish to npm`, before npm publish, cause in the tagged commit | Tag only | A re-run checks out the same commit, so it fails again. Land the fix on `main`, delete the tag, and tag the fixed commit with the same version. Nothing reached npm, so the version is still free. |
 | `Publish to npm`, after npm publish | On npm, no GitHub release | Re-run the job. It skips a version that npm already has. |
 
 A broken release that has reached npm is not re-tagged. Land a fix on `main` and release the next patch.

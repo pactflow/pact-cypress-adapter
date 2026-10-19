@@ -1,0 +1,105 @@
+name: Publish
+description: >-
+  Build, pack and publish the package to npm, then create the GitHub release.
+  With dry-run, run every step without publishing or releasing.
+
+inputs:
+  dry-run:
+    description: Run every step without publishing to npm or creating the release.
+    required: true
+  node-version:
+    description: Node.js version to build with.
+    required: true
+  npm-version:
+    description: npm version to publish with. Trusted publishing needs 11.5.1 or later.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
+
+    - name: Install npm
+      shell: bash
+      env:
+        NPM_VERSION: ${{ inputs.npm-version }}
+      run: npm install --global "npm@${NPM_VERSION}"
+
+    - name: Read version
+      id: version
+      shell: bash
+      run: echo "version=$(node --print 'require("./package.json").version')" >> "${GITHUB_OUTPUT}"
+
+    - name: Check the tag matches package.json
+      if: inputs.dry-run != 'true'
+      shell: bash
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        if [ "v${VERSION}" != "${GITHUB_REF_NAME}" ]; then
+          echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${VERSION}"
+          exit 1
+        fi
+
+    - name: Install dependencies
+      shell: bash
+      env:
+        CYPRESS_INSTALL_BINARY: '0'
+      run: npm ci
+
+    - name: Check version and changelog
+      if: inputs.dry-run == 'true'
+      shell: bash
+      run: node scripts/release.mts check
+
+    - name: Build
+      shell: bash
+      run: npm run build
+
+    - name: Check the npm tarball
+      shell: bash
+      run: npm run check:pack
+
+    # Skipping a version npm already has lets a failed release step be
+    # re-run on its own.
+    - name: Publish to npm
+      shell: bash
+      env:
+        DRY_RUN: ${{ inputs.dry-run }}
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        if [ "${DRY_RUN}" = "true" ]; then
+          npm publish --access public --dry-run
+          exit 0
+        fi
+        name=$(node --print 'require("./package.json").name')
+        if npm view "${name}@${VERSION}" version >/dev/null 2>&1; then
+          echo "${name}@${VERSION} is already on npm."
+        else
+          npm publish --access public
+        fi
+
+    - name: Create GitHub release
+      shell: bash
+      env:
+        DRY_RUN: ${{ inputs.dry-run }}
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        node scripts/release.mts notes "${VERSION}" > "${RUNNER_TEMP}/notes.md"
+        if [ "${DRY_RUN}" = "true" ]; then
+          {
+            echo "## Release notes for v${VERSION}"
+            echo
+            cat "${RUNNER_TEMP}/notes.md"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          exit 0
+        fi
+        gh release create "v${VERSION}" \
+          --verify-tag \
+          --title "v${VERSION}" \
+          --notes-file "${RUNNER_TEMP}/notes.md"

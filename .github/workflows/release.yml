@@ -2,7 +2,7 @@
 # the process for maintainers.
 #
 #   prepare  (push to main)           -> update the draft release PR
-#   dry-run  (ready release PR)       -> build, pack and check the release
+#   dry-run  (ready release PR)       -> the publish steps, with --dry-run
 #   tag      (release PR merged)      -> tag the merge commit v{version}
 #   publish  (push of a v* tag)       -> npm publish (OIDC) + GitHub release
 name: release
@@ -32,6 +32,8 @@ concurrency:
 
 env:
   NODE_VERSION: '24'
+  # renovate: datasource=npm depName=npm
+  NPM_VERSION: '12.2.0'
 
 jobs:
   # MARK: Sentinel
@@ -120,25 +122,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      # The same steps as the publish job, so a release PR shows whether the
+      # release itself will pass.
+      - name: Publish (dry run)
+        uses: ./.github/actions/publish
         with:
+          dry-run: 'true'
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-        env:
-          CYPRESS_INSTALL_BINARY: '0'
-
-      - name: Check version and changelog
-        run: node scripts/release.mts check
-
-      - name: Build
-        run: npm run build
-
-      - name: Check the npm tarball
-        run: npm run check:pack
+          npm-version: ${{ env.NPM_VERSION }}
 
   # MARK: Tag
 
@@ -201,52 +192,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Publish
+        uses: ./.github/actions/publish
         with:
+          dry-run: 'false'
           node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://registry.npmjs.org
-
-      # Trusted publishing needs npm 11.5.1 or later.
-      - name: Update npm
-        run: npm install --global npm@latest
-
-      - name: Check the tag matches package.json
-        run: |
-          version=$(node --print 'require("./package.json").version')
-          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
-            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
-            exit 1
-          fi
-
-      - name: Install dependencies
-        run: npm ci
-        env:
-          CYPRESS_INSTALL_BINARY: '0'
-
-      - name: Build
-        run: npm run build
-
-      - name: Check the npm tarball
-        run: npm run check:pack
-
-      # Skipping a version npm already has lets a failed release step be
-      # re-run on its own.
-      - name: Publish to npm
-        run: |
-          name=$(node --print 'require("./package.json").name')
-          if npm view "${name}@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1; then
-            echo "${name}@${GITHUB_REF_NAME#v} is already on npm."
-          else
-            npm publish --access public
-          fi
-
-      - name: Create GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          node scripts/release.mts notes "${GITHUB_REF_NAME}" > "${RUNNER_TEMP}/notes.md"
-          gh release create "${GITHUB_REF_NAME}" \
-            --verify-tag \
-            --title "${GITHUB_REF_NAME}" \
-            --notes-file "${RUNNER_TEMP}/notes.md"
+          npm-version: ${{ env.NPM_VERSION }}
