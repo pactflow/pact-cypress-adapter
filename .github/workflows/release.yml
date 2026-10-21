@@ -33,7 +33,7 @@ concurrency:
 env:
   NODE_VERSION: '24'
   # renovate: datasource=npm depName=npm
-  NPM_VERSION: '12.2.0'
+  NPM_VERSION: '12.2.1'
 
 jobs:
   # MARK: Sentinel
