@@ -30,7 +30,7 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@types/lodash": "4.17.26",
+    "@types/lodash": "4.17.27",
     "@types/node": "24.19.2",
     "@vitest/ui": "5.0.5",
     "cypress": "16.2.0",
