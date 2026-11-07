@@ -32,10 +32,10 @@
     "@biomejs/biome": "2.5.15",
     "@types/lodash": "4.17.27",
     "@types/node": "24.19.2",
-    "@vitest/ui": "5.0.5",
+    "@vitest/ui": "5.1.0",
     "cypress": "16.2.1",
     "typescript": "7.0.2",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   },
   "peerDependencies": {
     "cypress": ">=12.17.4"
